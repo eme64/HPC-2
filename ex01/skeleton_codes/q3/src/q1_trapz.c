@@ -8,13 +8,21 @@
 #include "q1_integrands.h"
 
 double q1_trapz_integrate(double (*f)(const double),
-                                 const double a, 
+                                 const double a,
                                  const double b,
                                  const int N,
-                                 const int nthreads) 
+                                 const int nthreads)
 {
     // TODO: Implement the integration routine
-    return 0.;
+    double h = (b-a) / (double)(N);
+    double sum = 0;
+
+    #pragma omp parallel for reduction(+:sum)
+    for (size_t i = 0; i < N+1; i++) {
+      sum += f(a + i*h);
+    }
+    sum -= 0.5 * (f(a) + f(b));
+    return h*sum;
 }
 
 typedef double (*analytic_fun_t)();
@@ -25,23 +33,23 @@ void q1_trapz() {
     const int expsize = 15;
 
     // TODO: set the correct lower bounds, each element for one integrand
-    const double a[] = {0., 0.,};
+    const double a[] = {-1.0, 1.,};
 
     // TODO: set the correct upper bound, each element for one integrand
-    const double b[] = {0., 0.,};
+    const double b[] = {1., pow(2,expsize),};
 
     const integrand_fun_t funs [] = {integrand_1, integrand_2};
     const analytic_fun_t analytic[] = {analytic_solution_1, analytic_solution_2};
 
-    
+
     // Validation
-    {    
+    {
         printf("validation error\n");
         for(int nfun = 0; nfun < 2; ++nfun){
             printf("function: %3d\n", nfun);
             printf("%10s %10s\n", "N", "error");
             for(long N = 2, i = 0; N <= (1 << expsize);  i += 1, N <<= 1){
-                const double trapz = 
+                const double trapz =
                     q1_trapz_integrate(funs[nfun], a[nfun], b[nfun], N, 1);
                 const double analy = (*analytic[nfun])();
                 const double err = fabs(trapz - analy);
@@ -51,7 +59,7 @@ void q1_trapz() {
     }
 
     // Serial execution:
-    {   
+    {
         printf("\nserial profile\n");
         const int n_repeats = 30;
         const int n_runs = 3;
@@ -62,7 +70,7 @@ void q1_trapz() {
             double avg_time = 0.;
             for(int k = 0; k < n_repeats; ++k) {
 
-                // Timing over three runs, to minimize 
+                // Timing over three runs, to minimize
                 // the overhead of the clock.
                 const double t1 = omp_get_wtime();
                 for(int t = 0; t < n_runs; ++t)
@@ -91,7 +99,7 @@ void q1_trapz() {
             double avg_time = 0.;
             for(int k = 0; k < n_repeats; ++k) {
 
-                // Timing over three runs, to minimize 
+                // Timing over three runs, to minimize
                 // the overhead of the clock.
                 const double t1 = omp_get_wtime();
                 for(int t = 0; t < n_runs; ++t)
@@ -107,4 +115,3 @@ void q1_trapz() {
         }
     }
 }
-

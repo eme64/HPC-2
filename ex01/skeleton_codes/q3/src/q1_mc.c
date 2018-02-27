@@ -7,14 +7,43 @@
 #include "q1_mc.h"
 #include "q1_integrands.h"
 
-double q1_mc_integrate(double (*f)(const double), 
-                                   const double a, 
+#define SEED 35791246
+
+/*
+** unbiased? Yes, since x are iid, with law of big numbers
+** variance? ???
+**
+** barriers: No, but random seeding may be an issue.
+** speedup: can be seen when program is run.
+** trapz scales, mc not so well...
+**
+** bonus: ???
+*/
+double q1_mc_integrate(double (*f)(const double),
+                                   const double a,
                                    const double b,
                                    const int N,
                                    const int nthreads)
 {
     // TODO: Implement the Monte Carlo integration routine
-    return 0.;
+    //srand(SEED);
+    double h = (b-a) / (double)(N);
+
+    double sum = 0;
+
+    #pragma omp parallel
+    {
+      int seed = SEED+omp_get_thread_num();
+      #pragma omp for reduction(+:sum)
+      for (size_t i = 0; i < N; i++) {
+        // how is the seeding to be done?
+        double rnd = (double)rand_r(&i)/RAND_MAX;
+        double x = a+rnd*(b-a);
+        sum += f(x);
+      }
+    }
+
+    return h*sum;
 }
 
 typedef double (*analytic_fun_t)();
@@ -25,23 +54,23 @@ void q1_mc() {
     const int expsize = 15;
 
     // TODO: set the correct lower bounds, each element for one integrand
-    const double a[] = {0., 0.,};
+    const double a[] = {-1.0, 1.,};
 
     // TODO: set the correct upper bound, each element for one integrand
-    const double b[] = {0., 0.,};
+    const double b[] = {1., pow(2,expsize),};
 
     const integrand_fun_t funs [] = {integrand_1, integrand_2};
     const analytic_fun_t analytic[] = {analytic_solution_1, analytic_solution_2};
 
-    
+
     // Validation
-    {    
+    {
         printf("validation error\n");
         for(int nfun = 0; nfun < 2; ++nfun){
             printf("function: %3d\n", nfun);
             printf("%10s %10s\n", "N", "error");
             for(long N = 2, i = 0; N <= (1 << expsize);  i += 1, N <<= 1){
-                const double trapz = 
+                const double trapz =
                     q1_mc_integrate(funs[nfun], a[nfun], b[nfun], N, 1);
                 const double analy = (*analytic[nfun])();
                 const double err = fabs(trapz - analy);
@@ -51,7 +80,7 @@ void q1_mc() {
     }
 
     // Serial execution:
-    {   
+    {
         printf("\nserial profile\n");
         const int n_repeats = 30;
         const int n_runs = 3;
@@ -62,7 +91,7 @@ void q1_mc() {
             double avg_time = 0.;
             for(int k = 0; k < n_repeats; ++k) {
 
-                // Timing over three runs, to minimize 
+                // Timing over three runs, to minimize
                 // the overhead of the clock.
                 const double t1 = omp_get_wtime();
                 for(int t = 0; t < n_runs; ++t)
@@ -85,13 +114,13 @@ void q1_mc() {
         double first_time = 0.;
 
         // Run n_repeats experiments.
-        printf("%10s %10s %10s\n", "nthreads", "N", "rel. time");        
+        printf("%10s %10s %10s\n", "nthreads", "N", "rel. time");
         for(int nthr = 1; nthr <= _NTHREADS; ++nthr){
 
             double avg_time = 0.;
             for(int k = 0; k < n_repeats; ++k) {
 
-                // Timing over three runs, to minimize 
+                // Timing over three runs, to minimize
                 // the overhead of the clock.
                 const double t1 = omp_get_wtime();
                 for(int t = 0; t < n_runs; ++t)
