@@ -58,32 +58,37 @@ public:
 
     double advance()
     {
-        MPI_Request req[4];
-        MPI_Status status[4];
+        int omp_id = omp_get_thread_num();
+        int omp_num =  omp_get_num_threads();
 
-        int prev_rank = rank_ - 1;
-        int next_rank = rank_ + 1;
+        if (omp_id == 0) {
+          MPI_Request req[4];
+          MPI_Status status[4];
 
-        if (prev_rank >= 0) {
-                MPI_Irecv(&rho_[           0*real_N_+1], N_, MPI_DOUBLE, prev_rank, 100, MPI_COMM_WORLD, &req[0]);
-                MPI_Isend(&rho_[           1*real_N_+1], N_, MPI_DOUBLE, prev_rank, 100, MPI_COMM_WORLD, &req[1]);
-        } else {
-                req[0] = MPI_REQUEST_NULL;
-                req[1] = MPI_REQUEST_NULL;
-        }
+          int prev_rank = rank_ - 1;
+          int next_rank = rank_ + 1;
 
-        if (next_rank < procs_) {
-                MPI_Irecv(&rho_[(local_N_+1)*real_N_+1], N_, MPI_DOUBLE, next_rank, 100, MPI_COMM_WORLD, &req[2]);
-                MPI_Isend(&rho_[    local_N_*real_N_+1], N_, MPI_DOUBLE, next_rank, 100, MPI_COMM_WORLD, &req[3]);
-        } else {
-                req[2] = MPI_REQUEST_NULL;
-                req[3] = MPI_REQUEST_NULL;
+          if (prev_rank >= 0) {
+                  MPI_Irecv(&rho_[           0*real_N_+1], N_, MPI_DOUBLE, prev_rank, 100, MPI_COMM_WORLD, &req[0]);
+                  MPI_Isend(&rho_[           1*real_N_+1], N_, MPI_DOUBLE, prev_rank, 100, MPI_COMM_WORLD, &req[1]);
+          } else {
+                  req[0] = MPI_REQUEST_NULL;
+                  req[1] = MPI_REQUEST_NULL;
+          }
+
+          if (next_rank < procs_) {
+                  MPI_Irecv(&rho_[(local_N_+1)*real_N_+1], N_, MPI_DOUBLE, next_rank, 100, MPI_COMM_WORLD, &req[2]);
+                  MPI_Isend(&rho_[    local_N_*real_N_+1], N_, MPI_DOUBLE, next_rank, 100, MPI_COMM_WORLD, &req[3]);
+          } else {
+                  req[2] = MPI_REQUEST_NULL;
+                  req[3] = MPI_REQUEST_NULL;
+          }
         }
 
         /// Dirichlet boundaries; central differences in space, forward Euler
         /// in time
         // update the interior rows
-        #pragma omp parallel for // probably should be further out -> less creation / destruction !
+        #pragma omp for nowait // probably should be further out -> less creation / destruction !
         for(int i = 2; i < local_N_; ++i) {
           for(int j = 1; j <= N_; ++j) {
             rho_tmp[i*real_N_ + j] = rho_[i*real_N_ + j] +
@@ -103,11 +108,14 @@ public:
           }
         }
 
-        // ensure boundaries have arrived
-        MPI_Waitall(4, req, status);
+        if (omp_id == 0) {
+          // ensure boundaries have arrived
+          MPI_Waitall(4, req, status);
+        }
+        #pragma omp barrier // make sure all have data
 
         // update the first and the last rows
-        #pragma omp parallel for
+        #pragma omp for
         for(int i = 1; i <= local_N_; i += (local_N_-1)) {
           for(int j = 1; j <= N_; ++j) {
             rho_tmp[i*real_N_ + j] = rho_[i*real_N_ + j] +
@@ -129,9 +137,13 @@ public:
 
         /// use swap instead of rho_=rho_tmp. this is much more efficient, because it does not have to copy
         /// element by element.
-        using std::swap;
-        swap(rho_tmp, rho_);
 
+        #pragma omp barrier
+        if (omp_id == 0) {
+          using std::swap;
+          swap(rho_tmp, rho_);
+        }
+        #pragma omp barrier
         t_ += dt_;
 
         return t_;
@@ -298,13 +310,15 @@ int main(int argc, char* argv[])
     double time = 0;
 
     timer t;
-
-    int i = 0;
     t.start();
-    while (time < tmax) {
-        time = system.advance();
-        i++;
-        if (i == 100) break; // 100 steps are enough
+    #pragma omp parallel
+    {
+      int i = 0;
+      while (time < tmax) {
+          time = system.advance();
+          i++;
+          if (i == 100) break; // 100 steps are enough
+      }
     }
     t.stop();
 
