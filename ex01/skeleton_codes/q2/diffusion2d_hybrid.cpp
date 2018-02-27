@@ -15,6 +15,7 @@
 
 // TODO: subquestion (b)
 // Adjust the code so as to provide a hybrid MPI+OpenMP implementation
+#include <omp.h>
 
 class Diffusion2D_MPI {
 public:
@@ -82,6 +83,7 @@ public:
         /// Dirichlet boundaries; central differences in space, forward Euler
         /// in time
         // update the interior rows
+        #pragma omp parallel for // probably should be further out -> less creation / destruction !
         for(int i = 2; i < local_N_; ++i) {
           for(int j = 1; j <= N_; ++j) {
             rho_tmp[i*real_N_ + j] = rho_[i*real_N_ + j] +
@@ -105,6 +107,7 @@ public:
         MPI_Waitall(4, req, status);
 
         // update the first and the last rows
+        #pragma omp parallel for
         for(int i = 1; i <= local_N_; i += (local_N_-1)) {
           for(int j = 1; j <= N_; ++j) {
             rho_tmp[i*real_N_ + j] = rho_[i*real_N_ + j] +
@@ -142,6 +145,96 @@ public:
 
         //
 
+        int M = 10;        // number of bins
+
+        int hist[M];
+        for (int i = 0; i < M; i++) hist[i] = 0;
+
+        double max_rho, min_rho;        // max and min density values
+        max_rho = rho_[1*real_N_ + 1];
+        min_rho = rho_[1*real_N_ + 1];
+
+        #pragma omp parallel
+        {
+          int omp_id = omp_get_thread_num();
+          int omp_num =  omp_get_num_threads();
+
+          #pragma omp for collapse(2) reduction(max:max_rho), reduction(min:min_rho)
+            for(int i = 2; i < local_N_; ++i)
+              for(int j = 1; j <= N_; ++j)
+              {
+                if (rho_[i*real_N_ + j] > max_rho)
+                {
+                    max_rho = rho_[i*real_N_ + j];
+                }
+                if (rho_[i*real_N_ + j] < min_rho)
+                {
+                    min_rho = rho_[i*real_N_ + j];
+                }
+              }
+
+          #pragma omp barrier // make sure reduction is done
+
+          if(omp_id == 0)
+          {
+            //std::cout << "num omp threads: " << omp_num << std::endl;
+            //printf("local_min_rho = %f\n", min_rho);
+            //printf("local_max_rho = %f\n", max_rho);
+
+            // share min/max with others !
+
+            double rcv_max_rho, rcv_min_rho;
+            // max:
+            MPI_Allreduce(&max_rho, &rcv_max_rho, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+            max_rho = rcv_max_rho;
+            // min:
+            MPI_Allreduce(&min_rho, &rcv_min_rho, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+            min_rho = rcv_min_rho;
+
+            if (rank_ == 0) {
+              printf("global_min_rho = %f\n", min_rho);
+              printf("global_local_max_rho = %f\n", max_rho);
+            }
+          }
+
+          #pragma omp barrier  // make sure others also get the correct mpi min/max
+
+          // histogram:
+          int local_hist[M];
+          for (int i = 0; i < M; i++) local_hist[i] = 0;
+
+          double epsilon = 1e-8;
+          double dh = (max_rho - min_rho + epsilon) / M;
+
+          #pragma omp for
+          for(int i = 1; i <= local_N_; ++i)
+              for(int j = 1; j <= N_; ++j)
+              {
+                  unsigned int bin = (rho_[i*real_N_ + j] - min_rho) / dh;
+                  local_hist[bin]++;
+              }
+
+          #pragma omp critical
+          {
+            for (int i = 0; i < M; i++)  hist[i]+= local_hist[i];
+          }
+        }
+        // send histogram to rank 0
+        // TODO
+        int rcv_hist[M];
+        MPI_Reduce(hist, rcv_hist, M, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+        if (rank_ == 0) {
+          printf("==================================\n");
+          printf("Output of compute_histogram_seq():\n");
+          int l = 0;
+          for (int i = 0; i < M; i++)
+          {
+                  printf("bin[%d] = %d\n", i, rcv_hist[i]);
+                  l += rcv_hist[i];
+          }
+          printf("Total elements = %d\n", l);
+        }
     }
 
 
@@ -183,7 +276,14 @@ int main(int argc, char* argv[])
     const int  N  = 1024;
     const double dt = 1e-7;
 
-    MPI_Init(&argc, &argv);
+    int provided;
+    MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided);
+
+    if (provided < MPI_THREAD_FUNNELED) {
+        std::cerr << "Error: MPI threading level is not enough." << std::endl;
+        MPI_Finalize();
+        return 1;
+    }
 
     int rank, procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);

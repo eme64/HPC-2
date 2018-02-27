@@ -10,7 +10,7 @@ diffusion2d_mpi: diffusion2d_mpi.cpp timer.hpp
 	mpic++ -O3 -o $@ $<
 
 diffusion2d_hybrid: diffusion2d_hybrid.cpp timer.hpp
-	# TODO: fill in
+	mpic++ -O3 -o $@ $< -fopenmp
 
 .PHONY: clean
 clean:
