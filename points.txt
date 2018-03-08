@@ -1,0 +1,15 @@
+--- Set 01:
+1a) 4/4
+1b) 5/5
+1c) 6/6
+
+
+2) 29/30
+-1 forgot omp in initialize_density()
+
+3) 29/35
+-1 missing strong scaling plot, but output seems ok
+-1 proof for unbiased not as good as should be
+-3 missing variance calculation
+-1 missing plot, but data probably ok
+(no bonus) was asked really weirdly, not really enough info to be solved.
