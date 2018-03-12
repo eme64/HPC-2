@@ -12,6 +12,7 @@ simply parallel for: linear speedup.
 have one single res, add each f(xi) with a task atomically: worse than seq.
 parallelize, single each i a task, each its own rand -> worse than seq.
 parallelize, res and rand per thread -> same as seq.
+parallelize, res and rand per thread, batchsize -> linear speedup
 */
 
 
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
 		if (omp_id_init == running_on_num-1) {
 			local_size+= n % running_on_num;
 		}
-		
+
 		//batch_size
 		//printf("offset %d\n", local_offset);
 		//printf("size %d\n", local_size);
