@@ -15,6 +15,11 @@ typedef std::array<value_type,2> coordinate_type;
 #define M_PI (3.14159265358979)
 #endif
 
+/*
+some speedup, but seemingly only 50% ?
+maybe overhead still too big?
+*/
+
 // #define PRINT_SEGMENTS
 std::ostream& operator<<(std::ostream& os, const coordinate_type& x)
 {
@@ -106,10 +111,11 @@ value_type work(coordinate_type a, coordinate_type b, size_type n, value_type ma
         {
           r3 = work(a3, b3, n, maxerrordensity);
         }
-        #pragma omp task shared(r4)
-        {
-          r4 = work(a4, b4, n, maxerrordensity);
-        }
+
+        //#pragma omp task shared(r4)
+        //{
+          r4 = work(a4, b4, n, maxerrordensity); // compute locally !
+        //}
 
         #pragma omp taskwait
 
