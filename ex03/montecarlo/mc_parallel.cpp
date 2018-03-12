@@ -35,14 +35,18 @@ int main(int argc, char *argv[])
 
 	int running_on_num = omp_get_max_threads();
 
+	int batch_size = 10;
+
 	if (argc > 2)
 		running_on_num = atol(argv[2]);
+
+	if (argc > 4)
+		batch_size = atol(argv[3]);
 
 	const double h = (b-a)/n;
 	const double ref = 0.73864299803689018;
 	double res = 0;
 	double t0, t1;
-	unsigned long i;
 
 	const int cacheline_size = 64;
 	// create res array and random array. including padding
@@ -72,22 +76,33 @@ int main(int argc, char *argv[])
 	}
 
 	t0 = omp_get_wtime();
-	printf("start\n");
+	printf("start num threads: %d\n", running_on_num);
 	#pragma omp parallel num_threads(running_on_num)
 	{
-		int omp_num =  omp_get_num_threads();
+		int omp_id_init = omp_get_thread_num();
 
-		unsigned long local_size = n/omp_num;
-		//printf("starting\n");
-		#pragma omp for
-		for (i = 0; i < n; i++) {
+		int local_size = n/running_on_num;
+		//unsigned long local_offset = local_size*omp_id_init;
+
+		if (omp_id_init == running_on_num-1) {
+			local_size+= n % running_on_num;
+		}
+		
+		//batch_size
+		//printf("offset %d\n", local_offset);
+		//printf("size %d\n", local_size);
+
+		//#pragma omp for
+		for (unsigned long i = 0; i < local_size; i+=10) {
 			#pragma omp task untied shared(res_omp, omp_rnd_udistr, omp_rnd_gen)
 			{
 				int omp_id = omp_get_thread_num();
 
-				double xi;
-				xi = omp_rnd_udistr[omp_id*rnd_2_padding]( omp_rnd_gen[omp_id*rnd_1_padding] );
-				res_omp[omp_id*res_padding] += f(xi);
+				for (size_t k = 0; k < batch_size; k++) {
+					double xi;
+					xi = omp_rnd_udistr[omp_id*rnd_2_padding]( omp_rnd_gen[omp_id*rnd_1_padding] );
+					res_omp[omp_id*res_padding] += f(xi);
+				}
 			}
 		}
 
