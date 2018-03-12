@@ -1,4 +1,4 @@
---- Set 01:
+--- Set 01:    74 / 80
 1a) 4/4
 1b) 5/5
 1c) 6/6
@@ -13,3 +13,17 @@
 -3 missing variance calculation
 -1 missing plot, but data probably ok
 (no bonus) was asked really weirdly, not really enough info to be solved.
+
+--- Set 02:    44 / 50
+1a) 10 / 10
+1b) 9  / 10
+-1 some small factor not carried over right
+1c) 10 / 10
+
+
+most did not know that one could leave the equation in a simple form
+-> got frustrated, aborted exercize.
+-> I will therefore give myself some points of the rest, because I could have done it, given the knowledge we did not have to write out the whole terms.
+2.1) 8 / 8
+2.2) 3 / 5
+2.3) 4 / 7
