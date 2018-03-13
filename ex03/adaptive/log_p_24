@@ -1,0 +1,36 @@
+Sender: LSF System <lsfadmin@eu-c7-020-15>
+Subject: Job 59401730: <./ai_p 100 0.0000001 24> in cluster <euler> Exited
+
+Job <./ai_p 100 0.0000001 24> was submitted from host <eu-login-06> by user <peterem> in cluster <euler> at Tue Mar 13 11:46:20 2018.
+Job was executed on host(s) <24*eu-c7-020-15>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Tue Mar 13 11:48:55 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex03/adaptive> was used as the working directory.
+Started at Tue Mar 13 11:48:55 2018.
+Terminated at Tue Mar 13 11:52:20 2018.
+Results reported at Tue Mar 13 11:52:20 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./ai_p 100 0.0000001 24
+------------------------------------------------------------
+
+TERM_OWNER: job killed by owner.
+Exited with exit code 130.
+
+Resource usage summary:
+
+    CPU time :                                   204.20 sec.
+    Max Memory :                                 3 MB
+    Average Memory :                             3.00 MB
+    Total Requested Memory :                     24576.00 MB
+    Delta Memory :                               24573.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                4
+    Run time :                                   222 sec.
+    Turnaround time :                            360 sec.
+
+The output (if any) follows:
+
