@@ -91,11 +91,11 @@ value_type work(coordinate_type a, coordinate_type b, size_type n, value_type ma
     value_type value_star;
     coordinate_type dx = {{b[0]-a[0], b[1]-a[1]}};
 
-    //#pragma omp task shared(value)
+    //#pragma omp task untied shared(value)
     {
       value = integrate(integrand,a,b,n);
     }
-    //#pragma omp task shared(value_star)
+    //#pragma omp task untied shared(value_star)
     {
       value_star = integrate(integrand,a,b,n/2);
     }
@@ -113,15 +113,15 @@ value_type work(coordinate_type a, coordinate_type b, size_type n, value_type ma
         coordinate_type a4 = {{center[0],a[1]}}, b4 = {{b[0],center[1]}};
 
         // must parallelize these
-        #pragma omp task shared(r1)
+        #pragma omp task untied shared(r1)
         {
           r1 = work(a, center, n, maxerrordensity);
         }
-        #pragma omp task shared(r2)
+        #pragma omp task untied shared(r2)
         {
           r2 = work(center, b, n, maxerrordensity);
         }
-        #pragma omp task shared(r3)
+        #pragma omp task untied shared(r3)
         {
           r3 = work(a3, b3, n, maxerrordensity);
         }
