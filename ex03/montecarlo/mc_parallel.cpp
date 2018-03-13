@@ -13,6 +13,13 @@ have one single res, add each f(xi) with a task atomically: worse than seq.
 parallelize, single each i a task, each its own rand -> worse than seq.
 parallelize, res and rand per thread -> same as seq.
 parallelize, res and rand per thread, batchsize -> linear speedup
+-> euler tests:
+serial:
+Result=0.7386544234432187 Error=1.142541e-05 Rel.Error=1.546810e-05 Time=8.466123 seconds
+start num threads: 12
+Result=0.7386328418724246 Error=1.015616e-05 Rel.Error=1.374976e-05 Time=0.769537 seconds
+
+speedup: 8.466123 / 0.769537 = 11 -> allmost linear !
 */
 
 
