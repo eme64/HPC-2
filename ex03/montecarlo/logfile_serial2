@@ -1,0 +1,36 @@
+Sender: LSF System <lsfadmin@eu-c7-006-09>
+Subject: Job 59398746: <./mc_serial 100000000> in cluster <euler> Done
+
+Job <./mc_serial 100000000> was submitted from host <eu-login-06> by user <peterem> in cluster <euler> at Tue Mar 13 11:08:02 2018.
+Job was executed on host(s) <12*eu-c7-006-09>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Tue Mar 13 11:08:27 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex03/montecarlo> was used as the working directory.
+Started at Tue Mar 13 11:08:27 2018.
+Terminated at Tue Mar 13 11:08:38 2018.
+Results reported at Tue Mar 13 11:08:38 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./mc_serial 100000000
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   8.49 sec.
+    Max Memory :                                 4 MB
+    Average Memory :                             4.00 MB
+    Total Requested Memory :                     12288.00 MB
+    Delta Memory :                               12284.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                4
+    Run time :                                   25 sec.
+    Turnaround time :                            36 sec.
+
+The output (if any) follows:
+
+Result=0.7386544234432187 Error=1.142541e-05 Rel.Error=1.546810e-05 Time=8.466123 seconds

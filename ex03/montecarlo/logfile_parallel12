@@ -1,0 +1,37 @@
+Sender: LSF System <lsfadmin@eu-c7-006-09>
+Subject: Job 59398809: <./mc_parallel 100000000 12> in cluster <euler> Done
+
+Job <./mc_parallel 100000000 12> was submitted from host <eu-login-06> by user <peterem> in cluster <euler> at Tue Mar 13 11:09:02 2018.
+Job was executed on host(s) <12*eu-c7-006-09>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Tue Mar 13 11:09:27 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex03/montecarlo> was used as the working directory.
+Started at Tue Mar 13 11:09:27 2018.
+Terminated at Tue Mar 13 11:09:28 2018.
+Results reported at Tue Mar 13 11:09:28 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./mc_parallel 100000000 12
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   9.20 sec.
+    Max Memory :                                 5 MB
+    Average Memory :                             5.00 MB
+    Total Requested Memory :                     12288.00 MB
+    Delta Memory :                               12283.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   17 sec.
+    Turnaround time :                            26 sec.
+
+The output (if any) follows:
+
+start num threads: 12
+Result=0.7386328418724246 Error=1.015616e-05 Rel.Error=1.374976e-05 Time=0.769537 seconds
