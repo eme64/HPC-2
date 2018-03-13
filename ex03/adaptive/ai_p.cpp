@@ -18,6 +18,20 @@ typedef std::array<value_type,2> coordinate_type;
 /*
 some speedup, but seemingly only 50% ?
 maybe overhead still too big?
+
+------- Home machine:
+serial:
+SEGMENT_SAMPLES = 10, MAX_ERROR = 1e-05, NUM_THREADS = 1, Result = -3.466662539, Time(s) = 3.850345465
+SEGMENT_SAMPLES = 10, MAX_ERROR = 1e-06, NUM_THREADS = 1, Result = -3.466663774, Time(s) = 17.20036047
+SEGMENT_SAMPLES = 100, MAX_ERROR = 1e-06, NUM_THREADS = 1, Result = -3.466663749, Time(s) = 23.11093478
+parallel:
+SEGMENT_SAMPLES = 10, MAX_ERROR = 1e-05, NUM_THREADS = 8, Result = -3.466662539, Time(s) = 0.908704482
+SEGMENT_SAMPLES = 10, MAX_ERROR = 1e-06, NUM_THREADS = 8, Result = -3.466663774, Time(s) = 7.332222433
+SEGMENT_SAMPLES = 100, MAX_ERROR = 1e-06, NUM_THREADS = 8, Result = -3.466663749, Time(s) = 5.348561931
+speedup: 3.850345465 / 0.908704482 = 23.11093478 / 5.348561931 = 4.3
+
+------- Euler:
+
 */
 
 // #define PRINT_SEGMENTS
