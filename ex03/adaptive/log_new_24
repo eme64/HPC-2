@@ -1,0 +1,36 @@
+Sender: LSF System <lsfadmin@eu-c7-021-11>
+Subject: Job 59406212: <./ai_p 100 0.0000001 24> in cluster <euler> Done
+
+Job <./ai_p 100 0.0000001 24> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Tue Mar 13 13:32:11 2018.
+Job was executed on host(s) <24*eu-c7-021-11>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Tue Mar 13 13:32:55 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex03/adaptive> was used as the working directory.
+Started at Tue Mar 13 13:32:55 2018.
+Terminated at Tue Mar 13 13:33:07 2018.
+Results reported at Tue Mar 13 13:33:07 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./ai_p 100 0.0000001 24
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   143.56 sec.
+    Max Memory :                                 7 MB
+    Average Memory :                             7.00 MB
+    Total Requested Memory :                     24576.00 MB
+    Delta Memory :                               24569.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                27
+    Run time :                                   22 sec.
+    Turnaround time :                            56 sec.
+
+The output (if any) follows:
+
+SEGMENT_SAMPLES = 100, MAX_ERROR = 1e-07, NUM_THREADS = 24, Result = -3.466663889, Time(s) = 10.91780613

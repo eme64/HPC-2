@@ -1,0 +1,36 @@
+Sender: LSF System <lsfadmin@eu-c7-022-03>
+Subject: Job 59406325: <./adaptive_integrator_serial 10 0.0000001> in cluster <euler> Done
+
+Job <./adaptive_integrator_serial 10 0.0000001> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Tue Mar 13 13:34:26 2018.
+Job was executed on host(s) <24*eu-c7-022-03>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Tue Mar 13 13:34:55 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex03/adaptive> was used as the working directory.
+Started at Tue Mar 13 13:34:55 2018.
+Terminated at Tue Mar 13 13:37:49 2018.
+Results reported at Tue Mar 13 13:37:49 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./adaptive_integrator_serial 10 0.0000001
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   173.01 sec.
+    Max Memory :                                 4 MB
+    Average Memory :                             4.00 MB
+    Total Requested Memory :                     24576.00 MB
+    Delta Memory :                               24572.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                4
+    Run time :                                   202 sec.
+    Turnaround time :                            203 sec.
+
+The output (if any) follows:
+
+SEGMENT_SAMPLES = 10, MAX_ERROR = 1e-07, NUM_THREADS = 1, Result = -3.466663889, Time(s) = 172.9021864
