@@ -1,0 +1,16 @@
+function Adaptive(f, x1, x2, y1, y2, n, tau)
+	Q <- Integrate(f, x1, x2, y1, y2, n)
+	Q* <- Integrate(f, x1, x2, y1, y2, n/2)
+
+	if abs(Q - Q*) > tau then
+		mid_x = (x1 + x2)/2
+		mid_y = (y1 + y2)/2
+		
+		// cut into 4 quadrants:
+		q1 = Adaptive(f, x1, mid_x, y1, mid_y, n, tau/4)
+		q2 = Adaptive(f, x1, mid_x, mid_y, y2, n, tau/4)
+		q3 = Adaptive(f, mid_x, x2, y1, mid_y, n, tau/4)
+		q4 = Adaptive(f, mid_x, x2, mid_y, y2, n, tau/4)
+		return q1 + q2 + q3 + q4
+	else
+		return Q
