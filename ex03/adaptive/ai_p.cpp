@@ -148,11 +148,11 @@ int main(int argc, const char** argv)
 {
     // read integration parameters from command line
     // pass nthreads by command line for a parallel version
-    if( argc != 3 )
-        throw std::runtime_error(std::string("usage: ")+argv[0]+" SEGMENT_SAMPLES MAX_ERROR");
+    if( argc != 4 )
+        throw std::runtime_error(std::string("usage: ")+argv[0]+" SEGMENT_SAMPLES MAX_ERROR NUM_THREADS");
     size_type segment_samples = std::stoul(argv[1]);
     value_type max_error      = std::stod (argv[2]);
-    size_type nthreads        = omp_get_max_threads();
+    size_type nthreads        = std::stoul(argv[3]); //omp_get_max_threads();
     std::cout.precision(10);
 
     value_type result;
