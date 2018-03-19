@@ -1,0 +1,195 @@
+Sender: LSF System <lsfadmin@eu-c7-003-14>
+Subject: Job 59747739: <./parallel data.txt 100000> in cluster <euler> Done
+
+Job <./parallel data.txt 100000> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Mon Mar 19 18:43:17 2018.
+Job was executed on host(s) <24*eu-c7-003-14>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Mar 19 18:43:53 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex04/q2> was used as the working directory.
+Started at Mon Mar 19 18:43:53 2018.
+Terminated at Mon Mar 19 18:43:54 2018.
+Results reported at Mon Mar 19 18:43:54 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./parallel data.txt 100000
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   11.88 sec.
+    Max Memory :                                 5 MB
+    Average Memory :                             5.00 MB
+    Total Requested Memory :                     24576.00 MB
+    Delta Memory :                               24571.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   10 sec.
+    Turnaround time :                            37 sec.
+
+The output (if any) follows:
+
+num threads: 24
+time: 0.553685
+neval = 959986
+efficiency = 0.104168
+Sender: LSF System <lsfadmin@eu-c7-016-15>
+Subject: Job 59747786: <./parallel data.txt 100000> in cluster <euler> Done
+
+Job <./parallel data.txt 100000> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Mon Mar 19 18:44:00 2018.
+Job was executed on host(s) <12*eu-c7-016-15>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Mar 19 18:44:24 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex04/q2> was used as the working directory.
+Started at Mon Mar 19 18:44:24 2018.
+Terminated at Mon Mar 19 18:44:25 2018.
+Results reported at Mon Mar 19 18:44:25 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./parallel data.txt 100000
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   6.35 sec.
+    Max Memory :                                 4 MB
+    Average Memory :                             4.00 MB
+    Total Requested Memory :                     12288.00 MB
+    Delta Memory :                               12284.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   5 sec.
+    Turnaround time :                            25 sec.
+
+The output (if any) follows:
+
+num threads: 12
+time: 0.555789
+neval = 1808803
+efficiency = 0.0552852
+Sender: LSF System <lsfadmin@eu-c7-017-05>
+Subject: Job 59747774: <./parallel data.txt 100000> in cluster <euler> Done
+
+Job <./parallel data.txt 100000> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Mon Mar 19 18:43:47 2018.
+Job was executed on host(s) <18*eu-c7-017-05>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Mar 19 18:44:24 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex04/q2> was used as the working directory.
+Started at Mon Mar 19 18:44:24 2018.
+Terminated at Mon Mar 19 18:44:25 2018.
+Results reported at Mon Mar 19 18:44:25 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./parallel data.txt 100000
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   8.80 sec.
+    Max Memory :                                 4 MB
+    Average Memory :                             4.00 MB
+    Total Requested Memory :                     18432.00 MB
+    Delta Memory :                               18428.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   23 sec.
+    Turnaround time :                            38 sec.
+
+The output (if any) follows:
+
+num threads: 18
+time: 0.519898
+neval = 1237620
+efficiency = 0.0808002
+Sender: LSF System <lsfadmin@eu-c7-022-12>
+Subject: Job 59747802: <./parallel data.txt 100000> in cluster <euler> Done
+
+Job <./parallel data.txt 100000> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Mon Mar 19 18:44:16 2018.
+Job was executed on host(s) <6*eu-c7-022-12>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Mar 19 18:44:54 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex04/q2> was used as the working directory.
+Started at Mon Mar 19 18:44:54 2018.
+Terminated at Mon Mar 19 18:44:56 2018.
+Results reported at Mon Mar 19 18:44:56 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./parallel data.txt 100000
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   3.66 sec.
+    Max Memory :                                 3 MB
+    Average Memory :                             3.00 MB
+    Total Requested Memory :                     6144.00 MB
+    Delta Memory :                               6141.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   15 sec.
+    Turnaround time :                            40 sec.
+
+The output (if any) follows:
+
+num threads: 6
+time: 0.655687
+neval = 4374835
+efficiency = 0.022858
+Sender: LSF System <lsfadmin@eu-ms-009-03>
+Subject: Job 59747816: <./parallel data.txt 100000> in cluster <euler> Done
+
+Job <./parallel data.txt 100000> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Mon Mar 19 18:44:31 2018.
+Job was executed on host(s) <eu-ms-009-03>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Mar 19 18:44:54 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex04/q2> was used as the working directory.
+Started at Mon Mar 19 18:44:54 2018.
+Terminated at Mon Mar 19 18:44:58 2018.
+Results reported at Mon Mar 19 18:44:58 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./parallel data.txt 100000
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   2.66 sec.
+    Max Memory :                                 3 MB
+    Average Memory :                             3.00 MB
+    Total Requested Memory :                     1024.00 MB
+    Delta Memory :                               1021.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   22 sec.
+    Turnaround time :                            27 sec.
+
+The output (if any) follows:
+
+num threads: 1
+time: 2.640116
+neval = 6610500
+efficiency = 0.0151274

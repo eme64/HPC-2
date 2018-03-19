@@ -1,0 +1,74 @@
+Sender: LSF System <lsfadmin@eu-c7-012-11>
+Subject: Job 59747647: <./serial> in cluster <euler> Done
+
+Job <./serial> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Mon Mar 19 18:42:00 2018.
+Job was executed on host(s) <24*eu-c7-012-11>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Mar 19 18:42:25 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex04/q2> was used as the working directory.
+Started at Mon Mar 19 18:42:25 2018.
+Terminated at Mon Mar 19 18:42:26 2018.
+Results reported at Mon Mar 19 18:42:26 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./serial
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.05 sec.
+    Max Memory :                                 2 MB
+    Average Memory :                             2.00 MB
+    Total Requested Memory :                     24576.00 MB
+    Delta Memory :                               24574.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   24 sec.
+    Turnaround time :                            26 sec.
+
+The output (if any) follows:
+
+usage: ./main <data.txt> <nsamples>
+Sender: LSF System <lsfadmin@eu-c7-021-13>
+Subject: Job 59747693: <./serial data.txt 100000> in cluster <euler> Done
+
+Job <./serial data.txt 100000> was submitted from host <eu-login-02> by user <peterem> in cluster <euler> at Mon Mar 19 18:42:38 2018.
+Job was executed on host(s) <24*eu-c7-021-13>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Mar 19 18:43:25 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex04/q2> was used as the working directory.
+Started at Mon Mar 19 18:43:25 2018.
+Terminated at Mon Mar 19 18:43:31 2018.
+Results reported at Mon Mar 19 18:43:31 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./serial data.txt 100000
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   3.88 sec.
+    Max Memory :                                 3 MB
+    Average Memory :                             3.00 MB
+    Total Requested Memory :                     24576.00 MB
+    Delta Memory :                               24573.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                4
+    Run time :                                   36 sec.
+    Turnaround time :                            53 sec.
+
+The output (if any) follows:
+
+time: 3.847027
+neval = 6610500
+efficiency = 0.0151274
