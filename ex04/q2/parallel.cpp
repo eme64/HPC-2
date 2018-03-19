@@ -11,6 +11,8 @@ the sampling is never higher than 1
 #include <string.h>
 #include <math.h>
 #include <random>
+#include <omp.h>
+#include <time.h>
 
 typedef float real;
 
@@ -209,8 +211,11 @@ int main(int argc, char **argv) {
 
     ini_histogram(&H);
 
+    printf("num threads: %d\n", omp_get_max_threads());
+    double t0 = omp_get_wtime();
     stats_posterior(nsamples, D, &H);
-
+    double t1 = omp_get_wtime();
+    printf("time: %f\n", t1-t0);
     printf("neval = %d\n", neval);
     printf("efficiency = %g\n", (float) nsamples / (float) neval);
 
