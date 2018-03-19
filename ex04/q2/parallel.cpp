@@ -143,17 +143,40 @@ static void add_to_histogram(const Params P, Histogram *H) {
     }
 }
 
+static void merge_histogram(Histogram *H_local, Histogram *H) {
+    for (int k = 0; k < M; ++k) {
+      for (size_t i = 0; i < NBINS; i++) {
+        H->a[k][i] += H_local->a[k][i];
+      }
+    }
+}
+
 static void stats_posterior(long nsamples, const Data D, Histogram *H) {
-    Params P;
-    int i;
 
-    int seed = 42;
-	  std::mt19937 gen(seed);
-	  std::uniform_real_distribution<float> udistr(0, 1);
+    #pragma omp parallel
+    {
+      Params P;
 
-    for (i = 0; i < nsamples; ++i) {
-        sample_posterior(D, &P, gen, udistr);
-        add_to_histogram(P, H);
+      // create local histogram:
+      Histogram H_local;
+      ini_histogram(&H_local);
+
+      int seed = 42;
+  	  std::mt19937 gen(seed);
+  	  std::uniform_real_distribution<float> udistr(0, 1);
+
+      #pragma omp for
+      for (int i = 0; i < nsamples; ++i) {
+          sample_posterior(D, &P, gen, udistr);
+          add_to_histogram(P, &H_local);
+      }
+
+      #pragma omp critical
+      {
+        // merge histogram:
+        merge_histogram(&H_local, H);
+      }
+      fin_histogram(&H_local);
     }
 }
 

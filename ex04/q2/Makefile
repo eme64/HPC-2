@@ -1,11 +1,14 @@
-CXX      ?= gcc
-CXXFLAGS = -Wall -O3 -std=c++11
+CXX      ?= g++
+CXXFLAGS = -std=c++11 -O3 -fopenmp -Wall
 LDFLAGS  = -lm
 
-all: serial
+all: serial parallel
 
 serial: serial.o
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS)
+
+parallel: parallel.o
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) -fopenmp
 
 
 %.o: %.cpp	
