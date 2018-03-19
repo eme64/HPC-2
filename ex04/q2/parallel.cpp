@@ -5,6 +5,20 @@ report on efficiency:
 this I got because I dared to change the function f to be a bit lower.
 the current setting is the one where I just about do not get errors,
 the sampling is never higher than 1
+
+
+
+-------------- Speed:
+samples: 100000
+serial: 3.847027
+
+24: 0.553685
+18: 0.519898
+12: 0.555789
+6: 0.655687
+1: 2.640116
+
+something not so good...
 */
 #include <stdio.h>
 #include <stdlib.h>
