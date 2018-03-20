@@ -16,4 +16,4 @@ parallel: parallel.o
 
 .PHONY: clean
 
-clean: ; rm -rf *.o serial
+clean: ; rm -rf *.o serial parallel

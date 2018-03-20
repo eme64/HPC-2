@@ -22,6 +22,7 @@ something not so good...
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstdio>
 #include <string.h>
 #include <math.h>
 #include <random>
@@ -90,8 +91,8 @@ static void read_data(const char *fname, Data *d) {
     fclose(f);
 }
 
-static real likelihood(const Params *P, const Data D) {
-    ++neval;
+static real likelihood(const Params *P, const Data D, int &num_eval) {
+    ++num_eval;
     /* TODO compute likelihood f */
     real pre_fac =  pow(2*M_PI*sigmasq, -0.5*D.n);
     real exp_sum = 0;
@@ -111,7 +112,7 @@ static void sample_proposal(Params *P, std::mt19937 &gen, std::uniform_real_dist
   }
 }
 
-static void sample_posterior(const Data D, Params *P, std::mt19937 &gen, std::uniform_real_distribution<float> &udistr) {
+static void sample_posterior(const Data D, Params *P, std::mt19937 &gen, std::uniform_real_distribution<float> &udistr, int &num_eval) {
     // draw from g:
     sample_proposal(P, gen, udistr);
 
@@ -122,7 +123,7 @@ static void sample_posterior(const Data D, Params *P, std::mt19937 &gen, std::un
     for (size_t k = 0; k < M; k++) {
       g = g/ (upper_bound[k] - lower_bound[k]);
     }
-    real rho = likelihood(P, D) / g * 0.00000005; // what about Tfactor?
+    real rho = likelihood(P, D, num_eval) / g * 0.00000005; // what about Tfactor?
 
     //printf("rho: %f\n", rho);
     if(rho >= 1.0)
@@ -133,7 +134,7 @@ static void sample_posterior(const Data D, Params *P, std::mt19937 &gen, std::un
       return; // done
     }else{
       // resample:
-      sample_posterior(D, P, gen, udistr);
+      sample_posterior(D, P, gen, udistr, num_eval);
     }
 }
 
@@ -173,24 +174,30 @@ static void stats_posterior(long nsamples, const Data D, Histogram *H) {
     {
       Params P;
 
+      int num_eval = 0;
+
+      int omp_id = omp_get_thread_num();
+      int omp_num = omp_get_num_threads();
       // create local histogram:
       Histogram H_local;
       ini_histogram(&H_local);
 
-      int seed = 42;
+      int seed = 42 + omp_id;
   	  std::mt19937 gen(seed);
   	  std::uniform_real_distribution<float> udistr(0, 1);
 
-      #pragma omp for
-      for (int i = 0; i < nsamples; ++i) {
-          sample_posterior(D, &P, gen, udistr);
+
+      for (int i = 0; i < nsamples/omp_num; ++i) {
+          sample_posterior(D, &P, gen, udistr, num_eval);
           add_to_histogram(P, &H_local);
       }
+
 
       #pragma omp critical
       {
         // merge histogram:
         merge_histogram(&H_local, H);
+        neval+=num_eval;
       }
       fin_histogram(&H_local);
     }
