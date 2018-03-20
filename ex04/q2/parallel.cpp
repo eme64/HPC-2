@@ -18,7 +18,15 @@ serial: 3.847027
 6: 0.655687
 1: 2.640116
 
-something not so good...
+samples: 1000000
+24: 5.198672
+18: 6.055471
+12: 5.746273
+6: 6.388808
+1: 24.922203
+
+something not so good... not sure what to do, all seems ok in the code...
+If I had more time I' try to make a deeper timing analysis, see where I'm leeking time
 */
 #include <stdio.h>
 #include <stdlib.h>
