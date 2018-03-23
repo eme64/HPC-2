@@ -27,6 +27,16 @@ samples: 1000000
 
 something not so good... not sure what to do, all seems ok in the code...
 If I had more time I' try to make a deeper timing analysis, see where I'm leeking time
+
+
+// new measurement with OMP_PROC_BIND=TRUE
+24: 1.536954
+18: 2.072042
+12: 3.001752
+6:  6.098003
+1: 24.320785
+
+This is quite good, basically linear
 */
 #include <stdio.h>
 #include <stdlib.h>
