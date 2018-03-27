@@ -7,6 +7,33 @@
 
 //#include "qr.hpp"
 
+/*
+------------- EULER MEASUREMENTS (more in file: log_out)
+
+------------- for K=20:
+thread : seconds -> speedup
+1 : 1.55296  -> 1
+2 : 0.886962 -> 1.75
+4 : 0.649816 -> 2.40
+8 : 0.477121 -> 3.25
+12: 0.389736 -> 4.00
+18: 0.336268 -> 4.61
+23: 0.404758 -> 3.84
+
+----------- same with dgels:
+1 : 1.39577  -> 1
+2 : 0.829318 -> 1.68
+4 : 0.511491 -> 2.73
+8 : 0.388919 -> 3.59
+12: 0.296205 -> 4.71
+18: 0.258826 -> 5.39
+23: 0.331876 -> 4.20
+
+conclusion:
+similar behaviour. 
+dgels a bit faster and a bit better scaling.
+probably due to better use of time within parts I had to seperate.
+*/
 
 
 void qr(int N, int p = 30);
