@@ -13,6 +13,7 @@ CXXFLAGS=\
 -O3 \
 -I./$(INCLUDEDIR) \
 -D_ISOC11_SOURCE \
+-fopenmp\
 
 LDFLAGS=\
 -lgomp \
@@ -31,7 +32,7 @@ main: $(BINARIES) main.cpp
 $(BINDIR)/%.o: $(SRCDIR)/%.cpp $(INCLUDEDIR)/%.hpp $(BINDIR)
 	$(CXX) $(CXXFLAGS) -c $(filter %.cpp, $^) -o $@
 
-$(BINDIR): 
+$(BINDIR):
 	mkdir $@
 
 clean:

@@ -8,6 +8,9 @@
 #include <random>
 #include <cmath>
 
+const int MAX_NUM_THREADS = 24;
+const int SEED_ARRAY_OFFSETS = 16;
+const int SEED_ARRAY_SIZE = MAX_NUM_THREADS*SEED_ARRAY_OFFSETS;
 /*
     Generate the random number of children given the probabilities.
 
@@ -27,7 +30,7 @@
             Random variable, number of children distributed according
             to the passed probabilities. 0 <= num_children.
  */
-int sample_num_children(const double cumsum_child_probabilities[2], unsigned short seed[3]);
+int sample_num_children(const double cumsum_child_probabilities[2], unsigned short seed[SEED_ARRAY_SIZE][3]);
 
 /*
     Generate the root node of the Markov tree
@@ -45,21 +48,21 @@ int sample_num_children(const double cumsum_child_probabilities[2], unsigned sho
     -------
         root : node_t *
             Pointer to the newly created node or NULL if failed to allocate
-            memory.        
+            memory.
 
  */
-node_t * init_markov_root(const double value_dist_exp_rate, unsigned short seed[3]);
+node_t * init_markov_root(const double value_dist_exp_rate, unsigned short seed[SEED_ARRAY_SIZE][3]);
 
 
 /*
     Generate the Markov tree according to child probabilities.
 
-    Takes a passed node and generates the number of children. It 
+    Takes a passed node and generates the number of children. It
     initializes the said number of children on the passed node,
     generates their value according to the passed exponential rate
-    and calls itself on each of the children nodes. 
+    and calls itself on each of the children nodes.
 
-    If generated number of children is zero, 
+    If generated number of children is zero,
     or if the maximum depth has been reached it returns the current depth.
 
     Parameters
@@ -76,7 +79,7 @@ node_t * init_markov_root(const double value_dist_exp_rate, unsigned short seed[
             the node's value.
 
         depth : int
-            Depth reached so far, used to control the recursion. 
+            Depth reached so far, used to control the recursion.
             Pass 0.
 
         max_depth : int
@@ -98,12 +101,12 @@ int init_markov_tree(node_t * const node,
                      const double value_dist_exp_rate,
                      const int depth,
                      const int max_depth,
-                     unsigned short seed[3]);
+                     unsigned short seed[SEED_ARRAY_SIZE][3]);
 
 /*
     Perform the first pass of the maximum path-sum algorithm.
 
-    root->value should be set to the maximum path-sum after the 
+    root->value should be set to the maximum path-sum after the
     completion of the routine.
 
     Parameters
@@ -122,8 +125,8 @@ void max_sum_pass1(node_t * const root);
     each depth of the graph:
 
     sequence[0] = i means that from root (0th node) we go to the i'th
-    child. If i == 0, it means termination. 
-    sequence[1] = j means we then go to the j'th child of i'th child of 
+    child. If i == 0, it means termination.
+    sequence[1] = j means we then go to the j'th child of i'th child of
     the root, and so on.
 
     Parameters
@@ -132,7 +135,7 @@ void max_sum_pass1(node_t * const root);
             Pointer to the node from which to start.
 
         depth : int
-            Current depth of the algorithm in the graph, used 
+            Current depth of the algorithm in the graph, used
             to control recursion. Pass 0 on first call.
 
         sequence : int *
