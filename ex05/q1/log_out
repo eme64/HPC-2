@@ -1,0 +1,886 @@
+Sender: LSF System <lsfadmin@eu-c7-054-11>
+Subject: Job 60107601: <./main> in cluster <euler> Done
+
+Job <./main> was submitted from host <eu-login-10> by user <peterem> in cluster <euler> at Tue Mar 27 13:37:14 2018.
+Job was executed on host(s) <24*eu-c7-054-11>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Tue Mar 27 14:38:06 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex05/q1> was used as the working directory.
+Started at Tue Mar 27 14:38:06 2018.
+Terminated at Tue Mar 27 14:40:57 2018.
+Results reported at Tue Mar 27 14:40:57 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./main
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   731.91 sec.
+    Max Memory :                                 923 MB
+    Average Memory :                             437.67 MB
+    Total Requested Memory :                     24576.00 MB
+    Delta Memory :                               23653.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                24
+    Run time :                                   191 sec.
+    Turnaround time :                            3823 sec.
+
+The output (if any) follows:
+
+######################################## NUM THREADS: 1
+#############################  K: 15, N: 32768, p: 30
+my time: 0.101791
+my Err: 0.00476948
+dgels time: 0.0403371
+dgels Err: 0.00476948
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.067832
+my Err: 0.00335675
+dgels time: 0.0541849
+dgels Err: 0.00335675
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.120958
+my Err: 0.00285381
+dgels time: 0.098244
+dgels Err: 0.00285381
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.295592
+my Err: 0.00156876
+dgels time: 0.251852
+dgels Err: 0.00156876
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.733342
+my Err: 0.00136805
+dgels time: 0.626967
+dgels Err: 0.00136805
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 1.55296
+my Err: 0.000869261
+dgels time: 1.39577
+dgels Err: 0.000869261
+my vs dgels: 0
+######################################## NUM THREADS: 2
+#############################  K: 15, N: 32768, p: 30
+my time: 0.023278
+my Err: 0.00767405
+dgels time: 0.0189312
+dgels Err: 0.00767405
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.0400271
+my Err: 0.00504183
+dgels time: 0.025811
+dgels Err: 0.00504183
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.111875
+my Err: 0.00225012
+dgels time: 0.0590649
+dgels Err: 0.00225012
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.316213
+my Err: 0.00209318
+dgels time: 0.144169
+dgels Err: 0.00209318
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.437313
+my Err: 0.00145298
+dgels time: 0.317197
+dgels Err: 0.00145298
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.886962
+my Err: 0.0008862
+dgels time: 0.829318
+dgels Err: 0.0008862
+my vs dgels: 0
+######################################## NUM THREADS: 3
+#############################  K: 15, N: 32768, p: 30
+my time: 0.015187
+my Err: 0.00396356
+dgels time: 0.0112882
+dgels Err: 0.00396356
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.028913
+my Err: 0.00350156
+dgels time: 0.0191472
+dgels Err: 0.00350156
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.096308
+my Err: 0.00238644
+dgels time: 0.049047
+dgels Err: 0.00238644
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.143066
+my Err: 0.0015159
+dgels time: 0.0950289
+dgels Err: 0.0015159
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.277958
+my Err: 0.00125981
+dgels time: 0.253644
+dgels Err: 0.00125981
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.691017
+my Err: 0.00100772
+dgels time: 0.510195
+dgels Err: 0.00100772
+my vs dgels: 0
+######################################## NUM THREADS: 4
+#############################  K: 15, N: 32768, p: 30
+my time: 0.0111411
+my Err: 0.00473368
+dgels time: 0.00988102
+dgels Err: 0.00473368
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.0166872
+my Err: 0.00375954
+dgels time: 0.0152092
+dgels Err: 0.00375954
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.049875
+my Err: 0.00235262
+dgels time: 0.042944
+dgels Err: 0.00235262
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.108489
+my Err: 0.00176967
+dgels time: 0.0793741
+dgels Err: 0.00176967
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.243893
+my Err: 0.00125416
+dgels time: 0.188266
+dgels Err: 0.00125416
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.649816
+my Err: 0.00104087
+dgels time: 0.511491
+dgels Err: 0.00104087
+my vs dgels: 0
+######################################## NUM THREADS: 5
+#############################  K: 15, N: 32768, p: 30
+my time: 0.0101271
+my Err: 0.00542333
+dgels time: 0.00873899
+dgels Err: 0.00542333
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.0152991
+my Err: 0.00310773
+dgels time: 0.0144689
+dgels Err: 0.00310773
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.044986
+my Err: 0.00206787
+dgels time: 0.0370369
+dgels Err: 0.00206787
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0948739
+my Err: 0.0018572
+dgels time: 0.0723982
+dgels Err: 0.0018572
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.243626
+my Err: 0.00133443
+dgels time: 0.195667
+dgels Err: 0.00133443
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.599281
+my Err: 0.000853874
+dgels time: 0.553826
+dgels Err: 0.000853874
+my vs dgels: 0
+######################################## NUM THREADS: 6
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00978208
+my Err: 0.00455815
+dgels time: 0.00890899
+dgels Err: 0.00455815
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.014251
+my Err: 0.00345138
+dgels time: 0.0131912
+dgels Err: 0.00345138
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0444751
+my Err: 0.00321644
+dgels time: 0.035975
+dgels Err: 0.00321644
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.106919
+my Err: 0.00190451
+dgels time: 0.0648441
+dgels Err: 0.00190451
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.217867
+my Err: 0.00126499
+dgels time: 0.164419
+dgels Err: 0.00126499
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.491371
+my Err: 0.000822228
+dgels time: 0.349595
+dgels Err: 0.000822228
+my vs dgels: 0
+######################################## NUM THREADS: 7
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00761294
+my Err: 0.00413395
+dgels time: 0.00680494
+dgels Err: 0.00413395
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.013732
+my Err: 0.00341216
+dgels time: 0.012784
+dgels Err: 0.00341216
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0450158
+my Err: 0.00216654
+dgels time: 0.03513
+dgels Err: 0.00216654
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0924509
+my Err: 0.00141881
+dgels time: 0.0673618
+dgels Err: 0.00141881
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.230009
+my Err: 0.00127164
+dgels time: 0.151016
+dgels Err: 0.00127164
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.517509
+my Err: 0.00074649
+dgels time: 0.418996
+dgels Err: 0.00074649
+my vs dgels: 0
+######################################## NUM THREADS: 8
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00799203
+my Err: 0.00557341
+dgels time: 0.00724792
+dgels Err: 0.00557341
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.012702
+my Err: 0.0038405
+dgels time: 0.011204
+dgels Err: 0.0038405
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.036972
+my Err: 0.00274636
+dgels time: 0.0312431
+dgels Err: 0.00274636
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0923879
+my Err: 0.00197253
+dgels time: 0.0609159
+dgels Err: 0.00197253
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.311816
+my Err: 0.00145912
+dgels time: 0.144998
+dgels Err: 0.00145912
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.477121
+my Err: 0.00101541
+dgels time: 0.388919
+dgels Err: 0.00101541
+my vs dgels: 0
+######################################## NUM THREADS: 9
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00679588
+my Err: 0.00572312
+dgels time: 0.00592208
+dgels Err: 0.00572312
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.0159309
+my Err: 0.00328511
+dgels time: 0.0115089
+dgels Err: 0.00328511
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.039243
+my Err: 0.00251802
+dgels time: 0.0305052
+dgels Err: 0.00251802
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0851729
+my Err: 0.00208168
+dgels time: 0.0599961
+dgels Err: 0.00208168
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.175159
+my Err: 0.00119754
+dgels time: 0.189877
+dgels Err: 0.00119754
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.428222
+my Err: 0.00102358
+dgels time: 0.357247
+dgels Err: 0.00102358
+my vs dgels: 0
+######################################## NUM THREADS: 10
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00833702
+my Err: 0.00413234
+dgels time: 0.00594306
+dgels Err: 0.00413234
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.0120161
+my Err: 0.00360088
+dgels time: 0.0114541
+dgels Err: 0.00360088
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0379832
+my Err: 0.00291709
+dgels time: 0.0306799
+dgels Err: 0.00291709
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.079726
+my Err: 0.00191067
+dgels time: 0.0611329
+dgels Err: 0.00191067
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.165473
+my Err: 0.00116646
+dgels time: 0.14786
+dgels Err: 0.00116646
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.393023
+my Err: 0.00103258
+dgels time: 0.326538
+dgels Err: 0.00103258
+my vs dgels: 0
+######################################## NUM THREADS: 11
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00619292
+my Err: 0.00623656
+dgels time: 0.00567985
+dgels Err: 0.00623656
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.014123
+my Err: 0.00483258
+dgels time: 0.0111501
+dgels Err: 0.00483258
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0349581
+my Err: 0.00211815
+dgels time: 0.0287662
+dgels Err: 0.00211815
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0758791
+my Err: 0.00151055
+dgels time: 0.056916
+dgels Err: 0.00151055
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.159271
+my Err: 0.00123709
+dgels time: 0.123982
+dgels Err: 0.00123709
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.397649
+my Err: 0.000903536
+dgels time: 0.423424
+dgels Err: 0.000903536
+my vs dgels: 0
+######################################## NUM THREADS: 12
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00670004
+my Err: 0.00605323
+dgels time: 0.00560498
+dgels Err: 0.00605323
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.010999
+my Err: 0.00357711
+dgels time: 0.010133
+dgels Err: 0.00357711
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0331669
+my Err: 0.00302357
+dgels time: 0.025816
+dgels Err: 0.00302357
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0698242
+my Err: 0.00200225
+dgels time: 0.0555
+dgels Err: 0.00200225
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.193625
+my Err: 0.00117211
+dgels time: 0.123295
+dgels Err: 0.00117211
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.389736
+my Err: 0.00107238
+dgels time: 0.296205
+dgels Err: 0.00107238
+my vs dgels: 0
+######################################## NUM THREADS: 13
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00577402
+my Err: 0.00499451
+dgels time: 0.0048449
+dgels Err: 0.00499451
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.0103488
+my Err: 0.00322428
+dgels time: 0.0100079
+dgels Err: 0.00322428
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0332849
+my Err: 0.00176999
+dgels time: 0.026427
+dgels Err: 0.00176999
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.068521
+my Err: 0.00183284
+dgels time: 0.054909
+dgels Err: 0.00183284
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.141648
+my Err: 0.00103652
+dgels time: 0.121853
+dgels Err: 0.00103652
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.395572
+my Err: 0.000814697
+dgels time: 0.310111
+dgels Err: 0.000814697
+my vs dgels: 0
+######################################## NUM THREADS: 14
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00587106
+my Err: 0.00485164
+dgels time: 0.00474095
+dgels Err: 0.00485164
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.0108359
+my Err: 0.0035929
+dgels time: 0.01004
+dgels Err: 0.0035929
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0326631
+my Err: 0.0023796
+dgels time: 0.0260539
+dgels Err: 0.0023796
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0681529
+my Err: 0.00157795
+dgels time: 0.0544581
+dgels Err: 0.00157795
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.14528
+my Err: 0.00162539
+dgels time: 0.119887
+dgels Err: 0.00162539
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.38536
+my Err: 0.00105694
+dgels time: 0.340149
+dgels Err: 0.00105694
+my vs dgels: 0
+######################################## NUM THREADS: 15
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00594497
+my Err: 0.00597466
+dgels time: 0.00522089
+dgels Err: 0.00597466
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.0138681
+my Err: 0.00329803
+dgels time: 0.010093
+dgels Err: 0.00329803
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0376
+my Err: 0.00278094
+dgels time: 0.0261462
+dgels Err: 0.00278094
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0927241
+my Err: 0.0020669
+dgels time: 0.0519559
+dgels Err: 0.0020669
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.17161
+my Err: 0.0010911
+dgels time: 0.112599
+dgels Err: 0.0010911
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.332951
+my Err: 0.00101966
+dgels time: 0.299305
+dgels Err: 0.00101966
+my vs dgels: 0
+######################################## NUM THREADS: 16
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00970006
+my Err: 0.00411231
+dgels time: 0.0067699
+dgels Err: 0.00411231
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.011168
+my Err: 0.00455169
+dgels time: 0.00969982
+dgels Err: 0.00455169
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0387959
+my Err: 0.00291489
+dgels time: 0.0253181
+dgels Err: 0.00291489
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0680649
+my Err: 0.00183286
+dgels time: 0.051388
+dgels Err: 0.00183286
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.197445
+my Err: 0.00131057
+dgels time: 0.13217
+dgels Err: 0.00131057
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.317955
+my Err: 0.00109873
+dgels time: 0.2623
+dgels Err: 0.00109873
+my vs dgels: 0
+######################################## NUM THREADS: 17
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00576901
+my Err: 0.00533085
+dgels time: 0.00496411
+dgels Err: 0.00533085
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.012531
+my Err: 0.00412505
+dgels time: 0.00972605
+dgels Err: 0.00412505
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0301831
+my Err: 0.00208922
+dgels time: 0.0242589
+dgels Err: 0.00208922
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0758629
+my Err: 0.00181128
+dgels time: 0.0610678
+dgels Err: 0.00181128
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.144581
+my Err: 0.00101856
+dgels time: 0.107523
+dgels Err: 0.00101856
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.338045
+my Err: 0.000907284
+dgels time: 0.286111
+dgels Err: 0.000907284
+my vs dgels: 0
+######################################## NUM THREADS: 18
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00613689
+my Err: 0.006999
+dgels time: 0.00513697
+dgels Err: 0.006999
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.010241
+my Err: 0.0041307
+dgels time: 0.00984907
+dgels Err: 0.0041307
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.029599
+my Err: 0.0029705
+dgels time: 0.02461
+dgels Err: 0.0029705
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.063575
+my Err: 0.00166531
+dgels time: 0.050993
+dgels Err: 0.00166531
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.134552
+my Err: 0.00144379
+dgels time: 0.10736
+dgels Err: 0.00144379
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.336268
+my Err: 0.000813166
+dgels time: 0.258826
+dgels Err: 0.000813166
+my vs dgels: 0
+######################################## NUM THREADS: 19
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00557804
+my Err: 0.00536172
+dgels time: 0.0048399
+dgels Err: 0.00536172
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.00992513
+my Err: 0.0033177
+dgels time: 0.00961399
+dgels Err: 0.0033177
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0367079
+my Err: 0.0028676
+dgels time: 0.0270491
+dgels Err: 0.0028676
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.076751
+my Err: 0.00188458
+dgels time: 0.0496278
+dgels Err: 0.00188458
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.235341
+my Err: 0.00170522
+dgels time: 0.130884
+dgels Err: 0.00170522
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.351235
+my Err: 0.00106887
+dgels time: 0.317403
+dgels Err: 0.00106887
+my vs dgels: 0
+######################################## NUM THREADS: 20
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00554514
+my Err: 0.00663626
+dgels time: 0.00457692
+dgels Err: 0.00663626
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.010287
+my Err: 0.00373024
+dgels time: 0.00954199
+dgels Err: 0.00373024
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.037637
+my Err: 0.00232525
+dgels time: 0.0271249
+dgels Err: 0.00232525
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0620759
+my Err: 0.00140973
+dgels time: 0.050384
+dgels Err: 0.00140973
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.15018
+my Err: 0.00127389
+dgels time: 0.106274
+dgels Err: 0.00127389
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.370294
+my Err: 0.000932351
+dgels time: 0.268171
+dgels Err: 0.000932351
+my vs dgels: 0
+######################################## NUM THREADS: 21
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00557899
+my Err: 0.00515508
+dgels time: 0.004776
+dgels Err: 0.00515508
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.009835
+my Err: 0.0034757
+dgels time: 0.00968099
+dgels Err: 0.0034757
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.028296
+my Err: 0.00224717
+dgels time: 0.0241449
+dgels Err: 0.00224717
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0621891
+my Err: 0.00205643
+dgels time: 0.0486979
+dgels Err: 0.00205643
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.149402
+my Err: 0.00118831
+dgels time: 0.110705
+dgels Err: 0.00118831
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.329413
+my Err: 0.00081116
+dgels time: 0.279174
+dgels Err: 0.00081116
+my vs dgels: 0
+######################################## NUM THREADS: 22
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00563598
+my Err: 0.00407699
+dgels time: 0.00474882
+dgels Err: 0.00407699
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.00980282
+my Err: 0.00327431
+dgels time: 0.00953889
+dgels Err: 0.00327431
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.0290859
+my Err: 0.00202217
+dgels time: 0.024332
+dgels Err: 0.00202217
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.0621011
+my Err: 0.00147411
+dgels time: 0.0492449
+dgels Err: 0.00147411
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.155178
+my Err: 0.00120399
+dgels time: 0.110341
+dgels Err: 0.00120399
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.331135
+my Err: 0.000818047
+dgels time: 0.267935
+dgels Err: 0.000818047
+my vs dgels: 0
+######################################## NUM THREADS: 23
+#############################  K: 15, N: 32768, p: 30
+my time: 0.00545096
+my Err: 0.00491084
+dgels time: 0.00478196
+dgels Err: 0.00491084
+my vs dgels: 0
+#############################  K: 16, N: 65536, p: 30
+my time: 0.010293
+my Err: 0.00331981
+dgels time: 0.009758
+dgels Err: 0.00331981
+my vs dgels: 0
+#############################  K: 17, N: 131072, p: 30
+my time: 0.029392
+my Err: 0.00256431
+dgels time: 0.024792
+dgels Err: 0.00256431
+my vs dgels: 0
+#############################  K: 18, N: 262144, p: 30
+my time: 0.063976
+my Err: 0.00197113
+dgels time: 0.052999
+dgels Err: 0.00197113
+my vs dgels: 0
+#############################  K: 19, N: 524288, p: 30
+my time: 0.145042
+my Err: 0.00118334
+dgels time: 0.110523
+dgels Err: 0.00118334
+my vs dgels: 0
+#############################  K: 20, N: 1048576, p: 30
+my time: 0.404758
+my Err: 0.000915195
+dgels time: 0.331876
+dgels Err: 0.000915195
+my vs dgels: 0
