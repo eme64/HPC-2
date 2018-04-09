@@ -27,3 +27,20 @@ most did not know that one could leave the equation in a simple form
 2.1) 8 / 8
 2.2) 3 / 5
 2.3) 4 / 7
+
+--- Set 03:    38/40
+1)  18/20
+did not do measurement up to 24 cores, but almost scales linearly at 12
+-2 for missing scaling plot
+2) 20 / 20
+
+
+--- Set 04     23/25
+1a) 8/8
+1b) 3/5
+-2 got stuck somewhere
+
+2) 12/12
+
+
+--- Set 05     
