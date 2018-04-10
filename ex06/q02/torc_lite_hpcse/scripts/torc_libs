@@ -1,0 +1,1 @@
+echo -L/home/Documents/HPC-2/ex06/q02/torc_lite_hpcse/lib -ltorc -lpthread
