@@ -13,6 +13,25 @@
 
 #include <mpi.h>
 
+/*
+
+Measurement euler N = 1024
+
+48: 0.535966
+24: 0.813769
+16: 1.34349
+8: 2.5451
+4: 6.16442
+1: 21.6933
+
+-> scales quite well, only at very high core numbers
+   the performance deteriorates.
+   but this may be in part the smaller area a core
+   has to do calculations on vs comm-overhead.
+
+*/
+
+
 typedef double value_type;
 typedef std::size_t size_type;
 
