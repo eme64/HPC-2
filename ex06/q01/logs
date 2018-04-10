@@ -1,0 +1,37 @@
+Sender: LSF System <lsfadmin@eu-c7-013-07>
+Subject: Job 60928733: <./diffusion_serial 14> in cluster <euler> Exited
+
+Job <./diffusion_serial 14> was submitted from host <eu-login-10> by user <peterem> in cluster <euler> at Mon Apr  9 18:03:09 2018.
+Job was executed on host(s) <eu-c7-013-07>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Apr  9 18:13:24 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex06/q01> was used as the working directory.
+Started at Mon Apr  9 18:13:24 2018.
+Terminated at Mon Apr  9 18:13:27 2018.
+Results reported at Mon Apr  9 18:13:27 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./diffusion_serial 14
+------------------------------------------------------------
+
+TERM_MEMLIMIT: job killed after reaching LSF memory usage limit.
+Exited with exit code 137.
+
+Resource usage summary:
+
+    CPU time :                                   2.12 sec.
+    Max Memory :                                 3072 MB
+    Average Memory :                             3072.00 MB
+    Total Requested Memory :                     1024.00 MB
+    Delta Memory :                               -2048.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   25 sec.
+    Turnaround time :                            618 sec.
+
+The output (if any) follows:
+
+/cluster/shadow/.lsbatch/1523289789.60928733: line 8: 24881 Killed                  ./diffusion_serial 14
