@@ -1,1 +1,0 @@
-echo -I/cluster/home/peterem/HPC-2/ex06/q02/torc_lite_hpcse/include -D_REENTRANT
