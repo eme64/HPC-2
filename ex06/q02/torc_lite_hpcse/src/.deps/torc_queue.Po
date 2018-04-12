@@ -1,11 +1,10 @@
-torc_queue.o: torc_queue.c /usr/include/stdc-predef.h \
- ../include/torc_internal.h ../include/torc_config.h \
- /usr/include/pthread.h /usr/include/features.h /usr/include/sys/cdefs.h \
- /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
- /usr/include/gnu/stubs-64.h /usr/include/endian.h \
- /usr/include/bits/endian.h /usr/include/bits/byteswap.h \
+torc_queue.o: torc_queue.c ../include/torc_internal.h \
+ ../include/torc_config.h /usr/include/pthread.h /usr/include/features.h \
+ /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+ /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \
+ /usr/include/endian.h /usr/include/bits/endian.h \
+ /usr/include/bits/byteswap.h /usr/include/sched.h \
  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
- /usr/include/bits/byteswap-16.h /usr/include/sched.h \
  /cluster/apps/gcc/4.8.2/lib/gcc/x86_64-unknown-linux-gnu/4.8.2/include/stddef.h \
  /usr/include/time.h /usr/include/bits/sched.h /usr/include/bits/time.h \
  /usr/include/xlocale.h /usr/include/bits/pthreadtypes.h \
@@ -25,11 +24,8 @@ torc_queue.o: torc_queue.c /usr/include/stdc-predef.h \
  ../include/queues.h ../include/torc_queue.h ../include/torc_data.h \
  ../include/torc_mpi_internal.h ../include/torc.h /usr/include/stdlib.h \
  /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
- /usr/include/alloca.h /usr/include/bits/stdlib-float.h \
- /usr/include/string.h /usr/include/bits/string.h \
+ /usr/include/alloca.h /usr/include/string.h /usr/include/bits/string.h \
  /usr/include/bits/string2.h
-
-/usr/include/stdc-predef.h:
 
 ../include/torc_internal.h:
 
@@ -53,13 +49,11 @@ torc_queue.o: torc_queue.c /usr/include/stdc-predef.h \
 
 /usr/include/bits/byteswap.h:
 
+/usr/include/sched.h:
+
 /usr/include/bits/types.h:
 
 /usr/include/bits/typesizes.h:
-
-/usr/include/bits/byteswap-16.h:
-
-/usr/include/sched.h:
 
 /cluster/apps/gcc/4.8.2/lib/gcc/x86_64-unknown-linux-gnu/4.8.2/include/stddef.h:
 
@@ -136,8 +130,6 @@ torc_queue.o: torc_queue.c /usr/include/stdc-predef.h \
 /usr/include/bits/waitstatus.h:
 
 /usr/include/alloca.h:
-
-/usr/include/bits/stdlib-float.h:
 
 /usr/include/string.h:
 
