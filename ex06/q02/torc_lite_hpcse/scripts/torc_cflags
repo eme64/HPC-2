@@ -1,1 +1,1 @@
-echo -I/cluster/home/chatzidp/usr/torc/include -D_REENTRANT
+echo -I/cluster/home/peterem/usr/torc/include -D_REENTRANT

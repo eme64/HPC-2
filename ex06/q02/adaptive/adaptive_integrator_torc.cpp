@@ -7,6 +7,15 @@
 #include <cassert>
 #include <stdexcept>
 #include <omp.h>
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <torc.h>
+#include <sys/wait.h>
+
+
 typedef std::size_t size_type;
 typedef double value_type;
 typedef std::array<value_type,2> coordinate_type;
@@ -65,8 +74,14 @@ value_type integrand(const coordinate_type& x)
 }
 
 
-value_type work(coordinate_type a, coordinate_type b, size_type n, value_type maxerrordensity)
+value_type work(double a1, double a2, double b1, double b2, int n, value_type maxerrordensity)
 {
+    std::cout << "task: " << a1 << ", "<< a2 << std::endl;
+    coordinate_type a;
+    a[0] = a1; a[1]=a2;
+    coordinate_type b;
+    b[0] = b1; b[1]=b2;
+
     value_type value = integrate(integrand,a,b,n);
     
     coordinate_type dx = {{b[0]-a[0], b[1]-a[1]}};
@@ -80,18 +95,72 @@ value_type work(coordinate_type a, coordinate_type b, size_type n, value_type ma
         coordinate_type a3 = {{a[0],center[1]}}, b3 = {{center[0],b[1]}};
         coordinate_type a4 = {{center[0],a[1]}}, b4 = {{b[0],center[1]}};
         
-        #pragma omp task shared(r1, a, b, center, n, maxerrordensity)
-        r1 = work(a, center, n, maxerrordensity);
+        //#pragma omp task shared(r1, a, b, center, n, maxerrordensity)
+        //r1 = work(a, center, n, maxerrordensity);
+	torc_task(
+		-1, (void (*)())work, 7,
+		1, MPI_DOUBLE, CALL_BY_COP,
+		1, MPI_DOUBLE, CALL_BY_COP,
+		1, MPI_DOUBLE, CALL_BY_COP,
+		1, MPI_DOUBLE, CALL_BY_COP,
+		1, MPI_INT, CALL_BY_COP,
+		1, MPI_DOUBLE, CALL_BY_COP,
+		1, MPI_DOUBLE, CALL_BY_RES,
+		&a[0], &a[1], &center[0], &center[1],
+		&n, &maxerrordensity,
+		&r1 //out
+	);	
 
-        #pragma omp task shared(r2, a, b, center, n, maxerrordensity)
-        r2 = work(center, b, n, maxerrordensity);
+        //#pragma omp task shared(r2, a, b, center, n, maxerrordensity)
+        //r2 = work(center, b, n, maxerrordensity);
+	torc_task(
+                -1, (void (*)())work, 7,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_INT, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_RES,
+                &center[0], &center[1], &b[0], &b[1],
+                &n, &maxerrordensity,
+                &r2 //out
+        );
 
-        #pragma omp task shared(r3, a, b, center, n, maxerrordensity)
-        r3 = work(a3, b3, n, maxerrordensity);
+        //#pragma omp task shared(r3, a, b, center, n, maxerrordensity)
+        //r3 = work(a3, b3, n, maxerrordensity);
+	torc_task(
+                -1, (void (*)())work, 7,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_INT, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_RES,
+                &a3[0], &a3[1], &b3[0], &b3[1],
+                &n, &maxerrordensity,
+                &r3 //out
+        );
 
-        r4 = work(a4, b4, n, maxerrordensity);
+        //r4 = work(a4, b4, n, maxerrordensity);
+	//r4 = work(a4[0], a4[1], b4[0], b4[1], n, maxerrordensity);
+	torc_task(
+                -1, (void (*)())work, 7,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_INT, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_COP,
+                1, MPI_DOUBLE, CALL_BY_RES,
+                &a4[0], &a4[1], &b4[0], &b4[1],
+                &n, &maxerrordensity,
+                &r4 //out
+        );
 
-        #pragma omp taskwait
+        //#pragma omp taskwait
+        torc_waitall();
         value = r1+r2+r3+r4;
     }
         
@@ -103,7 +172,7 @@ value_type work(coordinate_type a, coordinate_type b, size_type n, value_type ma
 }
 
 
-int main(int argc, const char** argv)
+int main(int argc, char** argv)
 {
     // read integration parameters from command line
     if( argc != 4 )
@@ -121,9 +190,14 @@ int main(int argc, const char** argv)
     coordinate_type dx = {{b[0]-a[0], b[1]-a[1]}};
 
     double t0 = omp_get_wtime();
-    #pragma omp parallel num_threads(nthreads)
-    #pragma omp single nowait
-    result = work(a, b, segment_samples, std::abs(max_error/dx[0]/dx[1]));
+    //#pragma omp parallel num_threads(nthreads)
+    //#pragma omp single nowait
+    std::cout << "register" << std::endl;
+    torc_register_task((void*)work);
+    std::cout << "torc_init" << std::endl;
+    torc_init(argc, argv, MODE_MW);
+    std::cout << "do work..." << std::endl;
+    result = work(a[0], a[1], b[0], b[1], segment_samples, std::abs(max_error/dx[0]/dx[1]));
     double t1 = omp_get_wtime();
 
     std::cout << "SEGMENT_SAMPLES = " << segment_samples << ", MAX_ERROR = " << max_error

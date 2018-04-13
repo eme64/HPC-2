@@ -11,7 +11,7 @@ adaptive_integrator_parallel: adaptive_integrator_parallel.cpp
 	$(CC) $(CFLAGS) -o adaptive_integrator_parallel adaptive_integrator_parallel.cpp
 
 adaptive_integrator_torc: adaptive_integrator_torc.cpp
-	mpicc 'torc_cflags' -o adaptive_integrator_torc adaptive_integrator_torc.cpp 'torc_libs'
+	mpic++ `torc_cflags` -o adaptive_integrator_torc adaptive_integrator_torc.cpp `torc_libs` -std=c++11 -fopenmp
 
 .PHONY: clean
 clean:
