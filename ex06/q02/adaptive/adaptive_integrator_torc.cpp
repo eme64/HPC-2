@@ -74,19 +74,25 @@ value_type integrand(const coordinate_type& x)
 }
 
 
-value_type work(double a1, double a2, double b1, double b2, int n, value_type maxerrordensity)
-{
-    std::cout << "task: " << a1 << ", "<< a2 << std::endl;
+value_type work(double *a1, double *a2, double *b1, double *b2, int *n_p, value_type *maxerrordensity_p)
+{   
     coordinate_type a;
-    a[0] = a1; a[1]=a2;
+    a[0] = *a1; a[1]=*a2;
     coordinate_type b;
-    b[0] = b1; b[1]=b2;
-
+    b[0] = *b1; b[1]=*b2;
+    int n=*n_p;
+    double maxerrordensity = *maxerrordensity_p;
+    //std::cout << "task(1): " << a << ", "<< b << std::endl;
+    
     value_type value = integrate(integrand,a,b,n);
     
+    //std::cout << "task(2): " << a << ", "<< b << std::endl;
+ 
     coordinate_type dx = {{b[0]-a[0], b[1]-a[1]}};
     value_type errordensity = std::abs((value - integrate(integrand,a,b,n/2))/dx[0]/dx[1]);
     
+    //std::cout << "task(3): " << a << ", "<< b << std::endl;
+     
     // subdivide into quarters by halving along each dimension
     if( errordensity > maxerrordensity )
     {
@@ -97,7 +103,8 @@ value_type work(double a1, double a2, double b1, double b2, int n, value_type ma
         
         //#pragma omp task shared(r1, a, b, center, n, maxerrordensity)
         //r1 = work(a, center, n, maxerrordensity);
-	torc_task(
+	//std::cout << "call(1): " << a << ", "<< center << std::endl;
+        torc_task(
 		-1, (void (*)())work, 7,
 		1, MPI_DOUBLE, CALL_BY_COP,
 		1, MPI_DOUBLE, CALL_BY_COP,
@@ -113,7 +120,8 @@ value_type work(double a1, double a2, double b1, double b2, int n, value_type ma
 
         //#pragma omp task shared(r2, a, b, center, n, maxerrordensity)
         //r2 = work(center, b, n, maxerrordensity);
-	torc_task(
+	//std::cout << "call(2): " << center << ", "<< b << std::endl;
+        torc_task(
                 -1, (void (*)())work, 7,
                 1, MPI_DOUBLE, CALL_BY_COP,
                 1, MPI_DOUBLE, CALL_BY_COP,
@@ -129,6 +137,7 @@ value_type work(double a1, double a2, double b1, double b2, int n, value_type ma
 
         //#pragma omp task shared(r3, a, b, center, n, maxerrordensity)
         //r3 = work(a3, b3, n, maxerrordensity);
+        //std::cout << "call(3): " << a3 << ", "<< b3 << std::endl;
 	torc_task(
                 -1, (void (*)())work, 7,
                 1, MPI_DOUBLE, CALL_BY_COP,
@@ -145,6 +154,7 @@ value_type work(double a1, double a2, double b1, double b2, int n, value_type ma
 
         //r4 = work(a4, b4, n, maxerrordensity);
 	//r4 = work(a4[0], a4[1], b4[0], b4[1], n, maxerrordensity);
+	//std::cout << "call(4): " << a4 << ", "<< b4 << std::endl;
 	torc_task(
                 -1, (void (*)())work, 7,
                 1, MPI_DOUBLE, CALL_BY_COP,
@@ -177,7 +187,7 @@ int main(int argc, char** argv)
     // read integration parameters from command line
     if( argc != 4 )
         throw std::runtime_error(std::string("usage: ")+argv[0]+" SEGMENT_SAMPLES MAX_ERROR NUM_THREADS");
-    size_type segment_samples = std::stoul(argv[1]);
+    int segment_samples = std::stoul(argv[1]);
     value_type max_error      = std::stod (argv[2]);
     size_type nthreads        = std::stoul(argv[3]);
     std::cout.precision(10);
@@ -197,7 +207,8 @@ int main(int argc, char** argv)
     std::cout << "torc_init" << std::endl;
     torc_init(argc, argv, MODE_MW);
     std::cout << "do work..." << std::endl;
-    result = work(a[0], a[1], b[0], b[1], segment_samples, std::abs(max_error/dx[0]/dx[1]));
+    double merr = std::abs(max_error/dx[0]/dx[1]);
+    result = work(&a[0], &a[1], &b[0], &b[1], &segment_samples, &merr);
     double t1 = omp_get_wtime();
 
     std::cout << "SEGMENT_SAMPLES = " << segment_samples << ", MAX_ERROR = " << max_error
