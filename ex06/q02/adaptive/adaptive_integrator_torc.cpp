@@ -74,7 +74,7 @@ value_type integrand(const coordinate_type& x)
 }
 
 
-value_type work(double *a1, double *a2, double *b1, double *b2, int *n_p, value_type *maxerrordensity_p)
+value_type work(double *a1, double *a2, double *b1, double *b2, int *n_p, value_type *maxerrordensity_p, double *res_p)
 {   
     coordinate_type a;
     a[0] = *a1; a[1]=*a2;
@@ -177,7 +177,7 @@ value_type work(double *a1, double *a2, double *b1, double *b2, int *n_p, value_
 #ifdef PRINT_SEGMENTS
     std::cout << "Segment [" << a << "," << b << "]\tvalue=" << value << "\terror density=" << errordensity << std::endl;
 #endif
-    
+    *res_p = value;
     return value;
 }
 
@@ -208,7 +208,7 @@ int main(int argc, char** argv)
     torc_init(argc, argv, MODE_MW);
     std::cout << "do work..." << std::endl;
     double merr = std::abs(max_error/dx[0]/dx[1]);
-    result = work(&a[0], &a[1], &b[0], &b[1], &segment_samples, &merr);
+    work(&a[0], &a[1], &b[0], &b[1], &segment_samples, &merr, &result);
     double t1 = omp_get_wtime();
 
     std::cout << "SEGMENT_SAMPLES = " << segment_samples << ", MAX_ERROR = " << max_error
