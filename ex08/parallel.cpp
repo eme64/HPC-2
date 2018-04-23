@@ -58,6 +58,7 @@ best:
 
 scaling is quite good. The results are a bit off though... (for P>1 threads)
 There was a typo, now it should all be fine.
+Yes, confirmed, see log_12_2.txt
 
 */
 
