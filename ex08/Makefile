@@ -1,5 +1,5 @@
 CXX ?= g++
-MPICXX?=mpicxx
+MPICXX?=mpic++
 CXXFLAGS = -O3 -Wall -std=c++11
 LDFLAGS = -lm
 

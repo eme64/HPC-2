@@ -1,0 +1,46 @@
+Sender: LSF System <lsfadmin@eu-c7-077-11>
+Subject: Job 62363089: <mpirun -n 8 ./parallel data.txt 10000 120 3 1> in cluster <euler> Done
+
+Job <mpirun -n 8 ./parallel data.txt 10000 120 3 1> was submitted from host <eu-login-09> by user <peterem> in cluster <euler> at Mon Apr 23 21:20:29 2018.
+Job was executed on host(s) <8*eu-c7-077-11>, in queue <normal.4h>, as user <peterem> in cluster <euler> at Mon Apr 23 21:23:15 2018.
+</cluster/home/peterem> was used as the home directory.
+</cluster/home/peterem/HPC-2/ex08> was used as the working directory.
+Started at Mon Apr 23 21:23:15 2018.
+Terminated at Mon Apr 23 21:23:22 2018.
+Results reported at Mon Apr 23 21:23:22 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+mpirun -n 8 ./parallel data.txt 10000 120 3 1
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   47.26 sec.
+    Max Memory :                                 72 MB
+    Average Memory :                             72.00 MB
+    Total Requested Memory :                     8192.00 MB
+    Delta Memory :                               8120.00 MB
+    Max Swap :                                   -
+    Max Processes :                              12
+    Max Threads :                                13
+    Run time :                                   26 sec.
+    Turnaround time :                            173 sec.
+
+The output (if any) follows:
+
+[5[6] M_local: 15, M_offset: 90
+[7] M_local: 15, M_offset: 105
+] M_local: 15, M_offset: 75
+[2] M_local: 15, M_offset: 30
+[3] M_local: 15, M_offset: 45
+[1] M_local: 15, M_offset: 15
+[0] M_local: 15, M_offset: 0
+[4] M_local: 15, M_offset: 60
+time: 5.30539
+best:
+9.805452e-03 5.000500e+00 4.554640e+00
