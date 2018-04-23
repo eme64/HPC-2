@@ -14,7 +14,50 @@
 /*
 ------------ RESULTS:
 
+[0] M_local: 120, M_offset: 0
+time: 43.1551
+best:
+9.803577e-03 1.991351e+00 5.000387e+00
+
+[[3] M_local: 30, M_offset: 90
+[1] M_local: 30, M_offset: 30
+2] M_local: 30, M_offset: 60
+[0] M_local: 30, M_offset: 0
+time: 10.0858
+best:
+9.809257e-03 5.000679e+00 1.095105e-02
+
+[5[6] M_local: 15, M_offset: 90
+[7] M_local: 15, M_offset: 105
+] M_local: 15, M_offset: 75
+[2] M_local: 15, M_offset: 30
+[3] M_local: 15, M_offset: 45
+[1] M_local: 15, M_offset: 15
+[0] M_local: 15, M_offset: 0
+[4] M_local: 15, M_offset: 60
+time: 5.30539
+best:
+9.805452e-03 5.000500e+00 4.554640e+00
+
+[5] M_local: 10, M_offset: 50[6] M_local: 10, M_offset: 60
+[9] M_local: 10, M_offset: 90
+[2] M_local: 10, M_offset: 20
+[3] M_local: 10, M_offset: 30
+[0] M_local: 10, M_offset: 0
+[11] M_local: 10, M_offset: 110
+[4] M_local: 10, M_offset: 40
+[1] M_local: 10, M_offset: 10
+[8] M_local: 10, M_offset: 80
+[7] M_local: 10, M_offset: 70
+[10] M_local: 10, M_offset: 100
+time: 3.60228
+best:
+9.834330e-03 4.999987e+00 2.173139e-01
+
 ----------- CONCLUSION:
+
+scaling is quite good. The results are a bit off though... (for P>1 threads)
+There was a typo, now it should all be fine.
 
 */
 
@@ -220,7 +263,7 @@ static void get_best(int M, const Params *x, const double *E, Params *xbest, dou
         if (rcv_data[3*i] < Eb) {
             Eb = rcv_data[3*i];
             xb.x[PAR_A] = rcv_data[3*i+1];
-            xb.x[PAR_A] = rcv_data[3*i+2];
+            xb.x[PAR_W] = rcv_data[3*i+2];
         }
       }
     }else{
