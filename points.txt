@@ -43,4 +43,29 @@ did not do measurement up to 24 cores, but almost scales linearly at 12
 2) 12/12
 
 
---- Set 05     
+--- Set 05     18/19
+1) 7/7
+2) 11/12
+-1 because parallelized init_markov_tree does not generate same tree
+
+
+--- Set 06     50/50
+1) 30/30
+2) 20/20
+
+--- Set 07     16/19
+1a) 4/5
+1b) 4/5
+-2 because arguments not perfect, some bad steps.
+
+2a) 1/2
+Let me expand what I did:
+t(x|y)
+= p(x|y)
+= p(x|y, u<=h) * p(u <= h | y) + p(x|y, u>h) * p(u > h | y)
+= q(x,y) * p(u <= h | y) + 1[x=y] * p(u > h | y)
+
+1[x=y] * p(u <= h | y) ---> clearly symmetric
+q(x,y) * p(u <= h | y) ---> not clear by my argument.
+
+2rest) 7/7
