@@ -12,7 +12,7 @@
 // Naive: one thread per particle
 //=======================================================================================================================
 template<typename Interaction>
-__global__ void nbodyNaiveKernel(const float3* __restrict__ coordinates, float3* forces, int n, Interaction interaction)
+__global__ void nbodyNaiveKernel(const float3* __restrict__ coordinates, float3* forces, int n, float L, Interaction interaction)
 {
 	// Get unique id of the thread
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -28,14 +28,14 @@ __global__ void nbodyNaiveKernel(const float3* __restrict__ coordinates, float3*
 	float3 f = make_float3(0);
 	for (int i=0; i<n; i++)
 		if (i != pid)
-			f += interaction(dst, coordinates[i]);
+			f += interaction(dst, coordinates[i], L);
 
 	// Write back the force
 	forces[pid] = f;
 }
 
 template<typename Interaction>
-void nbodyNaive(PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
+void nbodyNaive(int L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
 {
 	int nparticles = coordinates.size();
 
@@ -44,14 +44,14 @@ void nbodyNaive(PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces,
 	const int nthreads = 128;
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
 
-	nbodyNaiveKernel<<< nblocks, nthreads >>> (coordinates.devPtr(), forces.devPtr(), nparticles, interaction);
+	nbodyNaiveKernel<<< nblocks, nthreads >>> (coordinates.devPtr(), forces.devPtr(), nparticles, L, interaction);
 }
 
 //=======================================================================================================================
 // One thread per particle + shared memory
 //=======================================================================================================================
 template<typename Interaction>
-__global__ void nbodySharedKernel(const float3* coordinates, float3* forces, int n, Interaction interaction)
+__global__ void nbodySharedKernel(const float3* coordinates, float3* forces, int n, float L, Interaction interaction)
 {
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -77,7 +77,8 @@ __global__ void nbodySharedKernel(const float3* coordinates, float3* forces, int
 #pragma unroll 9
 		for (int j=0; j<min(blockDim.x, n-i); j++)
 			if (pid != i+j)
-				f += interaction(dst, cache[j]);
+				// interact:
+				f += interaction(dst, cache[j], L);
 
 		// Again wait until all the warps are done before moving on
 		__syncthreads();
@@ -89,7 +90,7 @@ __global__ void nbodySharedKernel(const float3* coordinates, float3* forces, int
 
 
 template<typename Interaction>
-void nbodyShared(PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
+void nbodyShared(float L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
 {
 	int nparticles = coordinates.size();
 
@@ -104,7 +105,7 @@ void nbodyShared(PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces
 // One thread per N particles + shared memory + split
 //=======================================================================================================================
 template<int nDestParticles, typename Interaction>
-__global__ void nbodySharedPlusILPKernel(const float3* coordinates, float3* forces, int n, Interaction interaction)
+__global__ void nbodySharedPlusILPKernel(const float3* coordinates, float3* forces, int n, float L, Interaction interaction)
 {
 	const int chunkId = blockIdx.y;
 	const int startId = blockIdx.x * blockDim.x + threadIdx.x;
@@ -138,7 +139,7 @@ __global__ void nbodySharedPlusILPKernel(const float3* coordinates, float3* forc
 
 			for (int d=0; d<nDestParticles; d++)
 				if ( dstStart + d != i+j )
-					f[d] += interaction(dsts[d], src);
+					f[d] += interaction(dsts[d], src, L);
     	}
 
 		__syncthreads();
@@ -154,7 +155,7 @@ __global__ void nbodySharedPlusILPKernel(const float3* coordinates, float3* forc
 }
 
 template<typename Interaction>
-void nbodySharedPlusILP(PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
+void nbodySharedPlusILP(float L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
 {
 	int nparticles = coordinates.size();
 
@@ -167,11 +168,11 @@ void nbodySharedPlusILP(PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>&
 
 	forces.clearDevice(0);
 	nbodySharedPlusILPKernel<ndsts> <<< nblocks3, nthreads3, nthreads*sizeof(float3) >>> (
-			coordinates.devPtr(), forces.devPtr(), nparticles, interaction);
+			coordinates.devPtr(), forces.devPtr(), nparticles, L, interaction);
 }
 
 template<typename Interaction>
-std::pair<double, double> diffNorms(const float3* coordinates, float3* forces, int nparticles, int nchecks, Interaction interaction)
+std::pair<double, double> diffNorms(const float3* coordinates, float3* forces, int nparticles, float L, int nchecks, Interaction interaction)
 {
 	const int stride = max(1, nparticles / nchecks);
 
@@ -184,7 +185,7 @@ std::pair<double, double> diffNorms(const float3* coordinates, float3* forces, i
 		for (int j=0; j<nparticles; j++)
 			if (i != j)
 			{
-				float3 curF = interaction(coordinates[i], coordinates[j]);
+				float3 curF = interaction(coordinates[i], coordinates[j], L);
 				totalF.x += curF.x;
 				totalF.y += curF.y;
 				totalF.z += curF.z;
@@ -210,6 +211,7 @@ std::pair<double, double> diffNorms(const float3* coordinates, float3* forces, i
 
 template<typename Kernel, typename Interaction>
 void runCheckReport(
+		float L, // domain size
 		PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces,
 		int nchecks, int nrepetitions,
 		std::string kernelName,
@@ -235,11 +237,11 @@ void runCheckReport(
 	for (int i=0; i<nrepetitions; i++)
 	{
 		cudaEventRecord(start);
-		kernel(coordinates, forces, interaction);
+		kernel(L, coordinates, forces, interaction);
 		cudaEventRecord(stop);
 
 		cudaEventSynchronize(stop);
-
+		
 		float ms = 0;
 		cudaEventElapsedTime(&ms, start, stop);
 		totalTime += ms;
@@ -249,7 +251,7 @@ void runCheckReport(
 	forces.     downloadFromDevice(0);
 
 	// Perform check against CPU
-	auto errs = diffNorms(coordinates.hostPtr(), forces.hostPtr(), nparticles, nchecks, interaction);
+	auto errs = diffNorms(coordinates.hostPtr(), forces.hostPtr(), nparticles, L, nchecks, interaction);
 
 	printf("Kernel '%s' statistics:\n  avg runtime: %.3fms\n  errors: Linf: %e, L2 %e\n\n",
 			kernelName.c_str(), totalTime / nrepetitions, errs.first, errs.second);
@@ -258,6 +260,7 @@ void runCheckReport(
 int main(int argc, char** argv)
 {
 	int n = 50000;
+	float L = 10;
 
 	if (argc > 1)
 	{
@@ -273,7 +276,7 @@ int main(int argc, char** argv)
 	// Fill the input array with random data
 	srand48(42);
 	for (auto& v : coordinates)
-		v = make_float3( drand48(), drand48(), drand48() ) * 2;
+		v = L * make_float3( drand48(), drand48(), drand48() );
 
 	// Transfer data to the GPU
 	coordinates.uploadToDevice(0);
@@ -286,8 +289,8 @@ int main(int argc, char** argv)
 	
 
 	// Naive implementation
-	runCheckReport(coordinates, forces, nchecks, nrepetitions, "Naive",               nbodyNaive        <decltype(ljforce)>, ljforce);
-	runCheckReport(coordinates, forces, nchecks, nrepetitions, "Shared memory",       nbodyShared       <decltype(ljforce)>, ljforce);
+	runCheckReport(L, coordinates, forces, nchecks, nrepetitions, "Naive",               nbodyNaive        <decltype(ljforce)>, ljforce);
+	runCheckReport(L, coordinates, forces, nchecks, nrepetitions, "Shared memory",       nbodyShared       <decltype(ljforce)>, ljforce);
 	/*
 	runCheckReport(coordinates, forces, nchecks, nrepetitions, "Naive",               nbodyNaive        <decltype(gravity)>, gravity);
 	runCheckReport(coordinates, forces, nchecks, nrepetitions, "Shared memory",       nbodyShared       <decltype(gravity)>, gravity);
