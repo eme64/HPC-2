@@ -265,7 +265,7 @@ void runCheckReport(
 //=======================================================================================================================
 // Naive: one thread per particle
 //=======================================================================================================================
-__global__ void nbodyNaiveKernel_pos(const float3* __restrict__ coordinates, const float3* forces, int n, const float3* velocity, const float dt)
+__global__ void nbodyNaiveKernel_pos(float3* coordinates, const float3* forces, int n, const float3* velocity, const float dt)
 {
 	// Get unique id of the thread
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -294,7 +294,7 @@ void nbody_posKernel(float dt, PinnedBuffer<float3>& coordinates, PinnedBuffer<f
 	nbodyNaiveKernel_pos<<< nblocks, nthreads >>> (coordinates.devPtr(), forces.devPtr(), nparticles, velocity.devPtr(), dt);
 }
 
-__global__ void nbodyNaiveKernel_velo(const float3* old_forces, const float3* new_forces, int n, const float3* velocity, const float dt)
+__global__ void nbodyNaiveKernel_velo(const float3* old_forces, const float3* new_forces, int n, float3* velocity, const float dt)
 {
 	// Get unique id of the thread
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -314,7 +314,7 @@ __global__ void nbodyNaiveKernel_velo(const float3* old_forces, const float3* ne
 }
 void nbody_veloKernel(float dt, PinnedBuffer<float3>& old_forces, PinnedBuffer<float3>& new_forces, PinnedBuffer<float3>& velocity)
 {
-	int nparticles = coordinates.size();
+	int nparticles = velocity.size();
 
 	// Use 4 warps in a block, calculate number of blocks,
 	// such that total number of threads is >= than number of particles
@@ -333,7 +333,7 @@ void init_data(
 )
 {
 	const int n_side = std::pow(n, 1.0/3.0)+1;
-	const float dl = L / (float)n_size;
+	const float dl = L / (float)n_side;
 
 	for (size_t x = 0; x < n_side; x++) {
 		for (size_t y = 0; y < n_side; y++) {
@@ -382,7 +382,7 @@ void runSimulation(
 		nbody_posKernel(dt, coordinates, forces, velocity);
 
 		// get new forces:
-		nbodyShared(L, coordinates, temp_forces, f_interaction);
+		nbodyShared<decltype(f_interaction)>(L, coordinates, temp_forces, f_interaction);
 
 		// update velocity:
 		nbody_veloKernel(dt, forces, temp_forces, velocity);
@@ -391,11 +391,14 @@ void runSimulation(
 		std::swap(forces, temp_forces);
 
 		t += dt;
+		printf("t: %.4f\n\n", t);
 	}
 
 	coordinates.downloadFromDevice(0);
 	forces.     downloadFromDevice(0);
 	velocity.   downloadFromDevice(0);
+	
+	printf("runtime: %.3fms\n\n", totalTime);
 }
 
 int main(int argc, char** argv)
@@ -410,9 +413,6 @@ int main(int argc, char** argv)
 		n = atoi(argv[1]);
 		assert(n > 0);
 	}
-
-	const int nchecks = 1313;
-	const int nrepetitions = 10;
 
 	PinnedBuffer<float3> coordinates(n), forces(n), velocity(n);
 	init_data(coordinates, velocity, forces, n, L);
@@ -431,7 +431,7 @@ int main(int argc, char** argv)
 	runSimulation(
 		coordinates, velocity, forces,
 		n, L, dt, T,
-		<decltype(ljforce)>, ljforce)
+		ljforce
 	);
 
 	return 0;
