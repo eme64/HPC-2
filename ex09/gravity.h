@@ -45,8 +45,8 @@ public:
 	__device__ __host__ inline float3 operator()(float3 dst, float3 src, float L) const
 	{
 		// shift around src:
-		float3 dr dst-src;
-		float3 d2 = dot(dr, dr);
+		float3 dr =  dst-src;
+		float d2 = dot(dr, dr);
 		
 		// find minimal d2:
 		for(int x = -1; x < 2; x++)

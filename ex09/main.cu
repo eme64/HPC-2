@@ -98,7 +98,7 @@ void nbodyShared(float L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
 
 	// Allocate shared memory: nthreads*sizeof(float3) PER BLOCK
-	nbodySharedKernel<<< nblocks, nthreads, nthreads*sizeof(float3) >>> (coordinates.devPtr(), forces.devPtr(), nparticles, interaction);
+	nbodySharedKernel<<< nblocks, nthreads, nthreads*sizeof(float3) >>> (coordinates.devPtr(), forces.devPtr(), nparticles, L, interaction);
 }
 
 //=======================================================================================================================
