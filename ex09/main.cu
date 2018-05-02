@@ -294,7 +294,7 @@ void nbody_posKernel(float dt, PinnedBuffer<float3>& coordinates, PinnedBuffer<f
 	nbodyNaiveKernel_pos<<< nblocks, nthreads >>> (coordinates.devPtr(), forces.devPtr(), nparticles, velocity.devPtr(), dt);
 }
 
-__global__ void nbodyNaiveKernel_velo(const float3* old_forces, const new_float3* forces, int n, const float3* velocity, const float dt)
+__global__ void nbodyNaiveKernel_velo(const float3* old_forces, const float3* new_forces, int n, const float3* velocity, const float dt)
 {
 	// Get unique id of the thread
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
