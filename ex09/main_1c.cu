@@ -261,11 +261,7 @@ void runCheckReport(
 //=======================================================================================================================
 // Naive: one thread per particle
 //=======================================================================================================================
-
-//=======================================================================================================================
-// Naive: one thread per particle
-//=======================================================================================================================
-__global__ void nbodyNaiveKernel_pos(const float3* __restrict__ coordinates, const float3* forces, int n, const float3* velocity, const float dt)
+__global__ void nbodyNaiveKernel_pos(const float3* __restrict__ coordinates, const float3* forces, int n, const float3* speed, const float dt)
 {
 	// Get unique id of the thread
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
@@ -276,7 +272,7 @@ __global__ void nbodyNaiveKernel_pos(const float3* __restrict__ coordinates, con
 
 	// Load
 	float3 r_old = coordinates[pid];
-	float3 v_old = velocity[pid];
+	float3 v_old = speed[pid];
 	float3 a_old = forces[pid];
 
 	// save:
@@ -349,61 +345,10 @@ void init_data(
 	}
 }
 
-template<typename Interaction>
-void runSimulation(
-	PinnedBuffer<float3> &coordinates,
-	PinnedBuffer<float3> &velocity,
-	PinnedBuffer<float3> &forces,
-	const int n,
-	const float L,
-	const float dt,
-	const float T,
-	Interaction f_interaction
-)
-{
-	// Check for input consistency
-	assert(coordinates.size() == forces.size());
-	assert(coordinates.size() == velocity.size());
-	const int nparticles = coordinates.size();
-
-	PinnedBuffer<float3> temp_forces(n);
-
-	// Total execution time of the kernel
-	float totalTime = 0;//gpu
-	// Allocate CUDA events to measure kernel runtime
-	cudaEvent_t start, stop;
-	cudaEventCreate(&start);
-	cudaEventCreate(&stop);
-
-	float t = 0;// algo
-
-	while (t < T) {
-		// update r (coordinates):
-		nbody_posKernel(dt, coordinates, forces, velocity);
-
-		// get new forces:
-		nbodyShared(L, coordinates, temp_forces, f_interaction);
-
-		// update velocity:
-		nbody_veloKernel(dt, forces, temp_forces, velocity);
-
-		// swap forces:
-		std::swap(forces, temp_forces);
-
-		t += dt;
-	}
-
-	coordinates.downloadFromDevice(0);
-	forces.     downloadFromDevice(0);
-	velocity.   downloadFromDevice(0);
-}
-
 int main(int argc, char** argv)
 {
 	int n = 50000;
 	float L = 10;
-	float dt = 0.0001;
-	float T = 1.0;
 
 	if (argc > 1)
 	{
@@ -414,13 +359,15 @@ int main(int argc, char** argv)
 	const int nchecks = 1313;
 	const int nrepetitions = 10;
 
-	PinnedBuffer<float3> coordinates(n), forces(n), velocity(n);
-	init_data(coordinates, velocity, forces, n, L);
+	PinnedBuffer<float3> coordinates(n), forces(n);
+
+	// Fill the input array with random data
+	srand48(42);
+	for (auto& v : coordinates)
+		v = L * make_float3( drand48(), drand48(), drand48() );
 
 	// Transfer data to the GPU
 	coordinates.uploadToDevice(0);
-	velocity.uploadToDevice(0);
-	forces.uploadToDevice(0);
 
 	//Pairwise_Gravity gravity(10.0);
 	Pairwise_LJ ljforce(
@@ -428,11 +375,15 @@ int main(int argc, char** argv)
 		0.5 // sigma
 	);
 
-	runSimulation(
-		coordinates, velocity, forces,
-		n, L, dt, T,
-		<decltype(ljforce)>, ljforce)
-	);
+
+	// Naive implementation
+	runCheckReport(L, coordinates, forces, nchecks, nrepetitions, "Naive",               nbodyNaive        <decltype(ljforce)>, ljforce);
+	runCheckReport(L, coordinates, forces, nchecks, nrepetitions, "Shared memory",       nbodyShared       <decltype(ljforce)>, ljforce);
+	/*
+	runCheckReport(coordinates, forces, nchecks, nrepetitions, "Naive",               nbodyNaive        <decltype(gravity)>, gravity);
+	runCheckReport(coordinates, forces, nchecks, nrepetitions, "Shared memory",       nbodyShared       <decltype(gravity)>, gravity);
+	*/
+	//runCheckReport(coordinates, forces, nchecks, nrepetitions, "Shared memory + ILP", nbodySharedPlusILP<decltype(gravity)>, gravity);
 
 	return 0;
 }
