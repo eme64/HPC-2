@@ -329,7 +329,7 @@ __global__ void nbodyNaiveKernel_Ekin(int n, const float3* velocity, float* Ekin
 {
 	// Get unique id of the thread
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
-	const int laneid = threadIdx.x % WARP_SIZE;
+	const int laneid = threadIdx.x % 32;
 
 	// Thread id is mapped onto particle id
 	// If the id >= than the total number of particles, just exit that thread
@@ -341,7 +341,7 @@ __global__ void nbodyNaiveKernel_Ekin(int n, const float3* velocity, float* Ekin
 
 	// sum within warp:
 	#pragma unroll
-	for(int mask = WARP_SIZE / 2 ; mask > 0 ; mask >>= 1)
+	for(int mask = 32 / 2 ; mask > 0 ; mask >>= 1)
 		ek_loc += __shfl_xor(ek_loc, mask);
 	// The ek_loc variable of laneid 0 contains the reduction.
 	if (laneid == 0) {
@@ -380,7 +380,7 @@ __global__ void nbodyNaiveKernel_Epot(const float3* __restrict__ coordinates, fl
 	float3 dst = coordinates[pid];
 
 	// Loop over all the other particles, compute the force and accumulate it
-	float Epot_local = 0
+	float Epot_local = 0;
 	for (int i=0; i<n; i++)
 		if (i > pid)
 			Epot_local += interaction.energy(dst, coordinates[i], L);
@@ -484,7 +484,7 @@ void runSimulation(
 		printf("t: %.4f\n\n", t);
 
 
-		if (step_counter % 100 = 0) {
+		if (step_counter % 100 == 0) {
 			// calculate energy:
 			nbodyNaive_Epot(L, coordinates, Epot_total, f_interaction);
 			nbodyKernel_Ekin(velocity, Ekin_total);
@@ -493,7 +493,7 @@ void runSimulation(
 			Epot_total.downloadFromDevice(0);
 			Ekin_total.downloadFromDevice(0);
 
-			printf("Epot: %.4f, Ekin: %.4f\n\n", Epot_total[0]), Ekin_total[0]);
+			printf("Epot: %.4f, Ekin: %.4f\n\n", Epot_total[0], Ekin_total[0]);
 		}
 		step_counter++;
 	}
