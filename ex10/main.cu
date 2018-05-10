@@ -445,6 +445,56 @@ void nbodyKernel_rescaleVelocities(PinnedBuffer<float3>& velocity, PinnedBuffer<
 	nbodyNaiveKernel_rescaleVelocities<<< nblocks, nthreads>>> (nparticles, velocity.devPtr(), scaleFactor.devPtr());
 }
 
+//=======================================================================================================================
+// Naive: one thread per particle
+//=======================================================================================================================
+template<typename Interaction>
+__global__ void nbodyNaiveKernel_FrSum(const float3* __restrict__ coordinates, int n, float L, float* sum, Interaction interaction)
+{
+	// Get unique id of the thread
+	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
+	const int laneid = threadIdx.x % 32;
+
+	// Thread id is mapped onto particle id
+	// If the id >= than the total number of particles, just exit that thread
+
+	float sum_local = 0;
+	if (pid >= n) return;
+
+	// Load particle coordinates
+	float3 dst = coordinates[pid];
+
+	// Loop over all the other particles, compute the force and accumulate it
+
+	for (int i=0; i<n; i++)
+		if (i > pid)
+			sum_local += interaction.Fr(dst, coordinates[i], L);
+
+	// sum within warp:
+	#pragma unroll
+	for(int mask = 32 / 2 ; mask > 0 ; mask >>= 1)
+		sum_local += __shfl_xor(sum_local, mask);
+	// The ek_loc variable of laneid 0 contains the reduction.
+	if (laneid == 0) {
+		// write back:
+		atomicAdd(sum, sum_local);
+	}
+}
+
+template<typename Interaction>
+void nbodyNaive_FrSum(cudaStream_t stream, int L, const PinnedBuffer<float3>& coordinates, PinnedBuffer<float>& sum, Interaction interaction)
+{
+	int nparticles = coordinates.size();
+
+	// Use 4 warps in a block, calculate number of blocks,
+	// such that total number of threads is >= than number of particles
+	const int nthreads = 128;
+	const int nblocks = (nparticles + nthreads - 1) / nthreads;
+
+	sum.clearDevice(0);
+	nbodyNaiveKernel_FrSum<<< nblocks, nthreads, 0, stream >>> (coordinates.devPtr(), nparticles, L,sum.devPtr(), interaction);
+}
+
 void init_data(
 	PinnedBuffer<float3> &coords,
 	PinnedBuffer<float3> &velocity,
@@ -508,6 +558,7 @@ void runSimulation(
 	PinnedBuffer<float> Epot_total(1);
 	PinnedBuffer<float> Ekin_total(1);
 	PinnedBuffer<float> Temp_scale_factor(1);
+	PinnedBuffer<float> FrSum(1);
 
 	// Total execution time of the kernel
 	float totalTime = 0;//gpu
@@ -571,6 +622,7 @@ void runSimulation(
 			Epot_total.downloadFromDevice(0);
 			Ekin_total.downloadFromDevice(0);
 
+
 			printf("t: %.4f\n\n", t);
 			printf("Epot: %.4f, Ekin: %.4f, E: %.4f\n\n", Epot_total[0], Ekin_total[0], Epot_total[0]+Ekin_total[0]);
 
@@ -584,14 +636,22 @@ void runSimulation(
 			nbodyKernel_Ekin(streamCompute, velocity, Ekin_total);
 			Ekin_total.downloadFromDevice(0);
 
-			const TempCurr = 2.0/(3.0 * n)*Ekin_total[0];
+			const float TempCurr = 2.0/(3.0 * n)*Ekin_total[0];
 			const float rescale_factor = std::sqrt(Temp0 / TempCurr);
+			printf("rescale_factor: %.4f\n\n", rescale_factor);
 			// sqrt because v is squared for energy.
 
 			// go scale velocities:
 			Temp_scale_factor[0] = rescale_factor;
 			Temp_scale_factor.uploadToDevice(0);
 			nbodyKernel_rescaleVelocities(velocity, Temp_scale_factor);
+
+
+			/// print pressure before scaling:
+			nbodyNaive_FrSum(streamCompute, L, coordinates, FrSum, f_interaction);
+			FrSum.downloadFromDevice(0);
+			const float pressure = 1.0 * TempCurr * n / V + 1.0/(3.0*V)*FrSum[0];
+			printf("pressure: %.4f\n\n", pressure);
 		}
 		step_counter++;
 	}
