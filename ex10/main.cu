@@ -11,6 +11,15 @@
 #include "gravity.h"
 #include "helper_math.h"
 
+/*
+I know that I messed up somewhere up to ex10 b)
+
+but I still continued with the rest, of course it is hard to debug...
+
+also: Daint was hardly executing my code, was too jammed.
+I ran out of time to do more....
+*/
+
 //=======================================================================================================================
 // Naive: one thread per particle
 //=======================================================================================================================
