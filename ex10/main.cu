@@ -315,7 +315,7 @@ __global__ void nbodyNaiveKernel_velo(const float3* old_forces, const float3* ne
 	// save:
 	velocity[pid] = v_old + 0.5*(a_old + a_new)*dt;
 }
-void nbody_veloKernel(float dt, PinnedBuffer<float3>& old_forces, PinnedBuffer<float3>& new_forces, PinnedBuffer<float3>& velocity)
+void nbody_veloKernel(cudaStream_t stream, float dt, PinnedBuffer<float3>& old_forces, PinnedBuffer<float3>& new_forces, PinnedBuffer<float3>& velocity)
 {
 	int nparticles = velocity.size();
 
@@ -324,7 +324,7 @@ void nbody_veloKernel(float dt, PinnedBuffer<float3>& old_forces, PinnedBuffer<f
 	const int nthreads = 128;
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
 
-	nbodyNaiveKernel_velo<<< nblocks, nthreads >>> (old_forces.devPtr(), new_forces.devPtr(), nparticles, velocity.devPtr(), dt);
+	nbodyNaiveKernel_velo<<< nblocks, nthreads, 0, stream>>> (old_forces.devPtr(), new_forces.devPtr(), nparticles, velocity.devPtr(), dt);
 }
 
 // ------------------------------- EX10:
@@ -354,7 +354,7 @@ __global__ void nbodyNaiveKernel_Ekin(int n, const float3* velocity, float* Ekin
 		atomicAdd(Ekin_tot, ek_loc);
 	}
 }
-void nbodyKernel_Ekin(PinnedBuffer<float3>& velocity, PinnedBuffer<float>& Ekin_tot)
+void nbodyKernel_Ekin(cudaStream_t stream, PinnedBuffer<float3>& velocity, PinnedBuffer<float>& Ekin_tot)
 {
 	int nparticles = velocity.size();
 
@@ -364,7 +364,7 @@ void nbodyKernel_Ekin(PinnedBuffer<float3>& velocity, PinnedBuffer<float>& Ekin_
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
 
 	Ekin_tot.clearDevice(0);
-	nbodyNaiveKernel_Ekin<<< nblocks, nthreads >>> (nparticles, velocity.devPtr(), Ekin_tot.devPtr());
+	nbodyNaiveKernel_Ekin<<< nblocks, nthreads, 0, stream >>> (nparticles, velocity.devPtr(), Ekin_tot.devPtr());
 }
 
 
@@ -405,7 +405,7 @@ __global__ void nbodyNaiveKernel_Epot(const float3* __restrict__ coordinates, fl
 }
 
 template<typename Interaction>
-void nbodyNaive_Epot(int L, const PinnedBuffer<float3>& coordinates, PinnedBuffer<float>& Epot_total, Interaction interaction)
+void nbodyNaive_Epot(cudaStream_t stream, int L, const PinnedBuffer<float3>& coordinates, PinnedBuffer<float>& Epot_total, Interaction interaction)
 {
 	int nparticles = coordinates.size();
 
@@ -415,7 +415,7 @@ void nbodyNaive_Epot(int L, const PinnedBuffer<float3>& coordinates, PinnedBuffe
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
 
 	Epot_total.clearDevice(0);
-	nbodyNaiveKernel_Epot<<< nblocks, nthreads >>> (coordinates.devPtr(), Epot_total.devPtr(), nparticles, L, interaction);
+	nbodyNaiveKernel_Epot<<< nblocks, nthreads, 0, stream >>> (coordinates.devPtr(), Epot_total.devPtr(), nparticles, L, interaction);
 }
 
 void init_data(
@@ -487,6 +487,10 @@ void runSimulation(
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 
+	cudaStream_t streamCompute, streamDataload;
+	cudaStreamCreate(&streamCompute);
+	cudaStreamCreate(&streamDataload);
+
 	float t = 0;// algo
 
 	int step_counter = 0;
@@ -500,8 +504,13 @@ void runSimulation(
 			printf("coordinates[0]: %.4f, %.4f, %.4f\n\n", coordinates[0].x, coordinates[0].y, coordinates[0].z);
 		}
 
+		// issue coordinate loading:
+		if (step_counter % 100 == 0) {
+			coordinates.downloadFromDevice(streamDataload, false); // no synch
+		}
+
 		// get new forces:
-		nbodyShared<decltype(f_interaction)>(L, coordinates, temp_forces, f_interaction);
+		nbodyShared<decltype(f_interaction)>(streamCompute, L, coordinates, temp_forces, f_interaction);
 
 		if (false) {
 			forces.downloadFromDevice(0);
@@ -511,21 +520,21 @@ void runSimulation(
 		}
 
 		// update velocity:
-		nbody_veloKernel(dt, forces, temp_forces, velocity);
+		nbody_veloKernel(streamCompute, dt, forces, temp_forces, velocity);
 
 		if (false) {
 			velocity.downloadFromDevice(0);
 			printf("velocity[0]: %.4f, %.4f, %.4f\n\n", velocity[0].x, velocity[0].y, velocity[0].z);
 		}
 
+		// synchronize:
+		cudaDeviceSynchronize();
+
 		// swap forces:
 		std::swap(forces, temp_forces);
 
 		t += dt;
-		//printf("t: %.4f\n\n", t);
-
-
-		if (step_counter % 5 == 0) {
+		if (step_counter % 100 == 0) {
 			// calculate energy:
 			nbodyNaive_Epot(L, coordinates, Epot_total, f_interaction);
 			nbodyKernel_Ekin(velocity, Ekin_total);
@@ -537,7 +546,7 @@ void runSimulation(
 			printf("t: %.4f\n\n", t);
 			printf("Epot: %.4f, Ekin: %.4f, E: %.4f\n\n", Epot_total[0], Ekin_total[0], Epot_total[0]+Ekin_total[0]);
 
-			coordinates.downloadFromDevice(0);
+			// data already loaded !
 			saveData("dump_" + std::to_string(step_counter) + ".txt", coordinates.hostPtr(), n);
 		}
 		step_counter++;
