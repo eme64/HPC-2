@@ -333,11 +333,13 @@ __global__ void nbodyNaiveKernel_Ekin(int n, const float3* velocity, float* Ekin
 
 	// Thread id is mapped onto particle id
 	// If the id >= than the total number of particles, just exit that thread
-	if (pid >= n) return;
 
-	// Load
-	float3 v = velocity[pid];
-	float ek_loc = dot(v,v)/2.0;
+	float ek_loc = 0;
+	if (pid < n)
+	{
+		float3 v = velocity[pid];
+		ek_loc = dot(v,v)/2.0;
+	}
 
 	// sum within warp:
 	#pragma unroll
@@ -375,13 +377,15 @@ __global__ void nbodyNaiveKernel_Epot(const float3* __restrict__ coordinates, fl
 
 	// Thread id is mapped onto particle id
 	// If the id >= than the total number of particles, just exit that thread
-	if (pid >= n) return;
 
+	float Epot_local = 0;
+	if (pid >= n) return;
+	
 	// Load particle coordinates
 	float3 dst = coordinates[pid];
 
 	// Loop over all the other particles, compute the force and accumulate it
-	float Epot_local = 0;
+
 	for (int i=0; i<n; i++)
 		if (i > pid)
 			Epot_local += interaction.energy(dst, coordinates[i], L);
