@@ -372,7 +372,7 @@ __global__ void nbodyNaiveKernel_Epot(const float3* __restrict__ coordinates, fl
 	// Get unique id of the thread
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
 	const int laneid = threadIdx.x % 32;
-	
+
 	// Thread id is mapped onto particle id
 	// If the id >= than the total number of particles, just exit that thread
 	if (pid >= n) return;
@@ -406,7 +406,8 @@ void nbodyNaive_Epot(int L, const PinnedBuffer<float3>& coordinates, PinnedBuffe
 	// such that total number of threads is >= than number of particles
 	const int nthreads = 128;
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
-
+	
+	Epot_total.clearDevice(0);
 	nbodyNaiveKernel_Epot<<< nblocks, nthreads >>> (coordinates.devPtr(), Epot_total.devPtr(), nparticles, L, interaction);
 }
 
@@ -485,7 +486,7 @@ void runSimulation(
 		printf("t: %.4f\n\n", t);
 
 
-		if (step_counter % 100 == 0) {
+		if (step_counter % 2 == 0) {
 			// calculate energy:
 			nbodyNaive_Epot(L, coordinates, Epot_total, f_interaction);
 			nbodyKernel_Ekin(velocity, Ekin_total);
