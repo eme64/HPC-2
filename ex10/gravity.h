@@ -107,7 +107,7 @@ public:
 		return 4.0*epsilon * (left - right);
 	}
 
-	__device__ __host__ inline float3 Fr(float3 dst, float3 src, float L) const
+	__device__ __host__ inline float Fr(float3 dst, float3 src, float L) const
 	{
 		// shift around src:
 		float3 dr =  dst-src;

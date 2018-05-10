@@ -650,6 +650,7 @@ void runSimulation(
 			/// print pressure before scaling:
 			nbodyNaive_FrSum(streamCompute, L, coordinates, FrSum, f_interaction);
 			FrSum.downloadFromDevice(0);
+			const float V = L*L*L;
 			const float pressure = 1.0 * TempCurr * n / V + 1.0/(3.0*V)*FrSum[0];
 			printf("pressure: %.4f\n\n", pressure);
 		}
