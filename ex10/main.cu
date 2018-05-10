@@ -406,7 +406,7 @@ void nbodyNaive_Epot(int L, const PinnedBuffer<float3>& coordinates, PinnedBuffe
 	// such that total number of threads is >= than number of particles
 	const int nthreads = 128;
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
-	
+
 	Epot_total.clearDevice(0);
 	nbodyNaiveKernel_Epot<<< nblocks, nthreads >>> (coordinates.devPtr(), Epot_total.devPtr(), nparticles, L, interaction);
 }
@@ -476,8 +476,18 @@ void runSimulation(
 		// get new forces:
 		nbodyShared<decltype(f_interaction)>(L, coordinates, temp_forces, f_interaction);
 
+		if (true) {
+			forces.downloadFromDevice(0);
+			printf("force[0]: %.4f, %.4f, %.4f\n\n", forces[0].x, forces[0].y, forces[0].z);
+		}
+
 		// update velocity:
 		nbody_veloKernel(dt, forces, temp_forces, velocity);
+
+		if (true) {
+			velocity.downloadFromDevice(0);
+			printf("velocity[0]: %.4f, %.4f, %.4f\n\n", velocity[0].x, velocity[0].y, velocity[0].z);
+		}
 
 		// swap forces:
 		std::swap(forces, temp_forces);
