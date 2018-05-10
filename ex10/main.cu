@@ -311,9 +311,6 @@ __global__ void nbodyNaiveKernel_velo(const float3* old_forces, const float3* ne
 
 	// save:
 	velocity[pid] = v_old + 0.5*(a_old + a_new)*dt;
-	velocity[pid].x = 1.0;
-	velocity[pid].y = 2.0;
-	velocity[pid].z = 3.0;
 }
 void nbody_veloKernel(float dt, PinnedBuffer<float3>& old_forces, PinnedBuffer<float3>& new_forces, PinnedBuffer<float3>& velocity)
 {
@@ -515,7 +512,7 @@ void runSimulation(
 			Epot_total.downloadFromDevice(0);
 			Ekin_total.downloadFromDevice(0);
 
-			printf("Epot: %.4f, Ekin: %.4f\n\n", Epot_total[0], Ekin_total[0]);
+			printf("Epot: %.4f, Ekin: %.4f, E: %.4f\n\n", Epot_total[0], Ekin_total[0], Epot_total[0]+Ekin_total[0]);
 		}
 		step_counter++;
 	}
