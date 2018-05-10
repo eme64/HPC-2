@@ -371,7 +371,8 @@ __global__ void nbodyNaiveKernel_Epot(const float3* __restrict__ coordinates, fl
 {
 	// Get unique id of the thread
 	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
-
+	const int laneid = threadIdx.x % 32;
+	
 	// Thread id is mapped onto particle id
 	// If the id >= than the total number of particles, just exit that thread
 	if (pid >= n) return;
@@ -387,7 +388,7 @@ __global__ void nbodyNaiveKernel_Epot(const float3* __restrict__ coordinates, fl
 
 	// sum within warp:
 	#pragma unroll
-	for(int mask = WARP_SIZE / 2 ; mask > 0 ; mask >>= 1)
+	for(int mask = 32 / 2 ; mask > 0 ; mask >>= 1)
 		Epot_local += __shfl_xor(Epot_local, mask);
 	// The ek_loc variable of laneid 0 contains the reduction.
 	if (laneid == 0) {
