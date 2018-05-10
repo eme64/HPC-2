@@ -538,7 +538,7 @@ void runSimulation(
 			printf("Epot: %.4f, Ekin: %.4f, E: %.4f\n\n", Epot_total[0], Ekin_total[0], Epot_total[0]+Ekin_total[0]);
 
 			coordinates.downloadFromDevice(0);
-			saveData("dump_" + step_counter + ".txt", coordinates.hostPtr(), n);
+			saveData("dump_" + std::to_string(step_counter) + ".txt", coordinates.hostPtr(), n);
 		}
 		step_counter++;
 	}
