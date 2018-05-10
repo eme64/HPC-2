@@ -418,6 +418,33 @@ void nbodyNaive_Epot(cudaStream_t stream, int L, const PinnedBuffer<float3>& coo
 	nbodyNaiveKernel_Epot<<< nblocks, nthreads, 0, stream >>> (coordinates.devPtr(), Epot_total.devPtr(), nparticles, L, interaction);
 }
 
+__global__ void nbodyNaiveKernel_rescaleVelocities(int n, float3* velocity, const float* scaleFactor)
+{
+	// Get unique id of the thread
+	const int pid = blockIdx.x * blockDim.x + threadIdx.x;
+
+	// Thread id is mapped onto particle id
+	// If the id >= than the total number of particles, just exit that thread
+	if (pid >= n) return;
+
+	// Load
+	float3 v_old = velocity[pid];
+
+	// save:
+	velocity[pid] = v_old*scaleFactor[0];
+}
+void nbodyKernel_rescaleVelocities(PinnedBuffer<float3>& velocity, PinnedBuffer<float>& scaleFactor)
+{
+	int nparticles = velocity.size();
+
+	// Use 4 warps in a block, calculate number of blocks,
+	// such that total number of threads is >= than number of particles
+	const int nthreads = 128;
+	const int nblocks = (nparticles + nthreads - 1) / nthreads;
+
+	nbodyNaiveKernel_rescaleVelocities<<< nblocks, nthreads>>> (nparticles, velocity.devPtr(), scaleFactor.devPtr());
+}
+
 void init_data(
 	PinnedBuffer<float3> &coords,
 	PinnedBuffer<float3> &velocity,
@@ -452,7 +479,7 @@ void saveData(std::string fileName, const float3* data, const int n)
 	vfile << "# comment line\n";
 
 	for (size_t i = 0; i < n; i++) {
-		vfile << data[i].x << " " << data[i].y << " " << data[i].z << "\n";
+		vfile << "0 " << data[i].x << " " << data[i].y << " " << data[i].z << "\n";
 	}
 
 	vfile.close();
@@ -467,7 +494,8 @@ void runSimulation(
 	const float L,
 	const float dt,
 	const float T,
-	Interaction f_interaction
+	Interaction f_interaction,
+	const float Temp0
 )
 {
 	// Check for input consistency
@@ -479,6 +507,7 @@ void runSimulation(
 
 	PinnedBuffer<float> Epot_total(1);
 	PinnedBuffer<float> Ekin_total(1);
+	PinnedBuffer<float> Temp_scale_factor(1);
 
 	// Total execution time of the kernel
 	float totalTime = 0;//gpu
@@ -549,6 +578,21 @@ void runSimulation(
 			cudaDeviceSynchronize();
 			saveData("dump_" + std::to_string(step_counter) + ".txt", coordinates.hostPtr(), n);
 		}
+
+		if (step_counter % 10 == 9) {
+			// do temperature control:
+			nbodyKernel_Ekin(streamCompute, velocity, Ekin_total);
+			Ekin_total.downloadFromDevice(0);
+
+			const TempCurr = 2.0/(3.0 * n)*Ekin_total[0];
+			const float rescale_factor = std::sqrt(Temp0 / TempCurr);
+			// sqrt because v is squared for energy.
+
+			// go scale velocities:
+			Temp_scale_factor[0] = rescale_factor;
+			Temp_scale_factor.uploadToDevice(0);
+			nbodyKernel_rescaleVelocities(velocity, Temp_scale_factor);
+		}
 		step_counter++;
 	}
 
@@ -566,10 +610,25 @@ int main(int argc, char** argv)
 	float dt = 0.000001;//0.0001;
 	float T = 1.0;
 
+	float epsilon = 0.1;
+	float sigma = 0.5;
+
 	if (argc > 1)
 	{
 		n = atoi(argv[1]);
 		assert(n > 0);
+	}
+
+	if (argc > 2)
+	{
+		epsilon = std::stof(argv[2]);
+		assert(epsilon > 0);
+	}
+
+	if (argc > 3)
+	{
+		sigma = std::stof(argv[3]);
+		assert(sigma > 0);
 	}
 
 	PinnedBuffer<float3> coordinates(n), forces(n), velocity(n);
@@ -582,14 +641,15 @@ int main(int argc, char** argv)
 
 	//Pairwise_Gravity gravity(10.0);
 	Pairwise_LJ ljforce(
-		0.1, // epsilon
-		0.5 // sigma
+		epsilon,
+		sigma
 	);
 
 	runSimulation(
 		coordinates, velocity, forces,
 		n, L, dt, T,
-		ljforce
+		ljforce,
+		10.0// Temp0 -> a complete guess.
 	);
 
 	return 0;
