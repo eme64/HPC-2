@@ -473,6 +473,11 @@ void runSimulation(
 		// update r (coordinates):
 		nbody_posKernel(dt, coordinates, forces, velocity);
 
+		if (true) {
+			coordinates.downloadFromDevice(0);
+			printf("coordinates[0]: %.4f, %.4f, %.4f\n\n", coordinates[0].x, coordinates[0].y, coordinates[0].z);
+		}
+		
 		// get new forces:
 		nbodyShared<decltype(f_interaction)>(L, coordinates, temp_forces, f_interaction);
 
