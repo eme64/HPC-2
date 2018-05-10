@@ -3,6 +3,9 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
+#include <string>
+#include <iostream>
+#include <fstream>
 
 #include "containers.h"
 #include "gravity.h"
@@ -380,7 +383,7 @@ __global__ void nbodyNaiveKernel_Epot(const float3* __restrict__ coordinates, fl
 
 	float Epot_local = 0;
 	if (pid >= n) return;
-	
+
 	// Load particle coordinates
 	float3 dst = coordinates[pid];
 
@@ -438,6 +441,21 @@ void init_data(
 			}
 		}
 	}
+}
+
+void saveData(std::string fileName, const float3* data, const int n)
+{
+	std::ofstream vfile;
+  vfile.open (fileName);
+
+  vfile << n << "\n";
+	vfile << "# comment line\n";
+
+	for (size_t i = 0; i < n; i++) {
+		vfile << data[i].x << " " << data[i].y << " " << data[i].z << "\n";
+	}
+
+	vfile.close();
 }
 
 template<typename Interaction>
@@ -518,6 +536,9 @@ void runSimulation(
 
 			printf("t: %.4f\n\n", t);
 			printf("Epot: %.4f, Ekin: %.4f, E: %.4f\n\n", Epot_total[0], Ekin_total[0], Epot_total[0]+Ekin_total[0]);
+
+			coordinates.downloadFromDevice(0);
+			saveData("dump_" + step_counter + ".txt", coordinates.hostPtr(), n);
 		}
 		step_counter++;
 	}
