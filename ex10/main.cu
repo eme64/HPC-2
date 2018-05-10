@@ -477,13 +477,15 @@ void runSimulation(
 			coordinates.downloadFromDevice(0);
 			printf("coordinates[0]: %.4f, %.4f, %.4f\n\n", coordinates[0].x, coordinates[0].y, coordinates[0].z);
 		}
-		
+
 		// get new forces:
 		nbodyShared<decltype(f_interaction)>(L, coordinates, temp_forces, f_interaction);
 
 		if (true) {
 			forces.downloadFromDevice(0);
 			printf("force[0]: %.4f, %.4f, %.4f\n\n", forces[0].x, forces[0].y, forces[0].z);
+			temp_forces.downloadFromDevice(0);
+			printf("temp_forces[0]: %.4f, %.4f, %.4f\n\n", temp_forces[0].x, temp_forces[0].y, temp_forces[0].z);
 		}
 
 		// update velocity:
