@@ -500,10 +500,10 @@ void runSimulation(
 		std::swap(forces, temp_forces);
 
 		t += dt;
-		printf("t: %.4f\n\n", t);
+		//printf("t: %.4f\n\n", t);
 
 
-		if (step_counter % 100 == 0) {
+		if (step_counter % 5 == 0) {
 			// calculate energy:
 			nbodyNaive_Epot(L, coordinates, Epot_total, f_interaction);
 			nbodyKernel_Ekin(velocity, Ekin_total);
@@ -512,6 +512,7 @@ void runSimulation(
 			Epot_total.downloadFromDevice(0);
 			Ekin_total.downloadFromDevice(0);
 
+			printf("t: %.4f\n\n", t);
 			printf("Epot: %.4f, Ekin: %.4f, E: %.4f\n\n", Epot_total[0], Ekin_total[0], Epot_total[0]+Ekin_total[0]);
 		}
 		step_counter++;
@@ -528,7 +529,7 @@ int main(int argc, char** argv)
 {
 	int n = 50000;
 	float L = 10;
-	float dt = 0.00001;//0.0001;
+	float dt = 0.000001;//0.0001;
 	float T = 1.0;
 
 	if (argc > 1)
