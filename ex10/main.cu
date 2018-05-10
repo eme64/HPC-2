@@ -311,6 +311,9 @@ __global__ void nbodyNaiveKernel_velo(const float3* old_forces, const float3* ne
 
 	// save:
 	velocity[pid] = v_old + 0.5*(a_old + a_new)*dt;
+	velocity[pid].x = 1.0;
+	velocity[pid].x = 2.0;
+	velocity[pid].x = 3.0;
 }
 void nbody_veloKernel(float dt, PinnedBuffer<float3>& old_forces, PinnedBuffer<float3>& new_forces, PinnedBuffer<float3>& velocity)
 {
@@ -498,13 +501,6 @@ void runSimulation(
 
 		// swap forces:
 		std::swap(forces, temp_forces);
-
-		if (true) {
-			forces.downloadFromDevice(0);
-			printf("swap-force[0]: %.4f, %.4f, %.4f\n\n", forces[0].x, forces[0].y, forces[0].z);
-			temp_forces.downloadFromDevice(0);
-			printf("swap-temp_forces[0]: %.4f, %.4f, %.4f\n\n", temp_forces[0].x, temp_forces[0].y, temp_forces[0].z);
-		}
 
 		t += dt;
 		printf("t: %.4f\n\n", t);
