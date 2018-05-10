@@ -473,7 +473,7 @@ void runSimulation(
 		// update r (coordinates):
 		nbody_posKernel(dt, coordinates, forces, velocity);
 
-		if (true) {
+		if (false) {
 			coordinates.downloadFromDevice(0);
 			printf("coordinates[0]: %.4f, %.4f, %.4f\n\n", coordinates[0].x, coordinates[0].y, coordinates[0].z);
 		}
@@ -481,7 +481,7 @@ void runSimulation(
 		// get new forces:
 		nbodyShared<decltype(f_interaction)>(L, coordinates, temp_forces, f_interaction);
 
-		if (true) {
+		if (false) {
 			forces.downloadFromDevice(0);
 			printf("force[0]: %.4f, %.4f, %.4f\n\n", forces[0].x, forces[0].y, forces[0].z);
 			temp_forces.downloadFromDevice(0);
@@ -491,7 +491,7 @@ void runSimulation(
 		// update velocity:
 		nbody_veloKernel(dt, forces, temp_forces, velocity);
 
-		if (true) {
+		if (false) {
 			velocity.downloadFromDevice(0);
 			printf("velocity[0]: %.4f, %.4f, %.4f\n\n", velocity[0].x, velocity[0].y, velocity[0].z);
 		}
@@ -503,7 +503,7 @@ void runSimulation(
 		printf("t: %.4f\n\n", t);
 
 
-		if (step_counter % 2 == 0) {
+		if (step_counter % 100 == 0) {
 			// calculate energy:
 			nbodyNaive_Epot(L, coordinates, Epot_total, f_interaction);
 			nbodyKernel_Ekin(velocity, Ekin_total);
@@ -528,7 +528,7 @@ int main(int argc, char** argv)
 {
 	int n = 50000;
 	float L = 10;
-	float dt = 0.0001;
+	float dt = 0.00001;//0.0001;
 	float T = 1.0;
 
 	if (argc > 1)
