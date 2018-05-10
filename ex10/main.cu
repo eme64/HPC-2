@@ -38,7 +38,7 @@ __global__ void nbodyNaiveKernel(const float3* __restrict__ coordinates, float3*
 }
 
 template<typename Interaction>
-void nbodyNaive(int L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
+void nbodyNaive(cudaStream_t stream, int L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
 {
 	int nparticles = coordinates.size();
 
@@ -47,7 +47,7 @@ void nbodyNaive(int L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& 
 	const int nthreads = 128;
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
 
-	nbodyNaiveKernel<<< nblocks, nthreads >>> (coordinates.devPtr(), forces.devPtr(), nparticles, L, interaction);
+	nbodyNaiveKernel<<< nblocks, nthreads, 0, stream >>> (coordinates.devPtr(), forces.devPtr(), nparticles, L, interaction);
 }
 
 //=======================================================================================================================
@@ -93,7 +93,7 @@ __global__ void nbodySharedKernel(const float3* coordinates, float3* forces, int
 
 
 template<typename Interaction>
-void nbodyShared(float L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
+void nbodyShared(cudaStream_t stream, float L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
 {
 	int nparticles = coordinates.size();
 
@@ -101,7 +101,7 @@ void nbodyShared(float L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3
 	const int nblocks = (nparticles + nthreads - 1) / nthreads;
 
 	// Allocate shared memory: nthreads*sizeof(float3) PER BLOCK
-	nbodySharedKernel<<< nblocks, nthreads, nthreads*sizeof(float3) >>> (coordinates.devPtr(), forces.devPtr(), nparticles, L, interaction);
+	nbodySharedKernel<<< nblocks, nthreads, nthreads*sizeof(float3), stream >>> (coordinates.devPtr(), forces.devPtr(), nparticles, L, interaction);
 }
 
 //=======================================================================================================================
@@ -158,7 +158,7 @@ __global__ void nbodySharedPlusILPKernel(const float3* coordinates, float3* forc
 }
 
 template<typename Interaction>
-void nbodySharedPlusILP(float L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
+void nbodySharedPlusILP(cudaStream_t stream, float L, PinnedBuffer<float3>& coordinates, PinnedBuffer<float3>& forces, Interaction interaction)
 {
 	int nparticles = coordinates.size();
 
@@ -170,7 +170,7 @@ void nbodySharedPlusILP(float L, PinnedBuffer<float3>& coordinates, PinnedBuffer
 	const dim3 nblocks3(nblocks, 10, 1);
 
 	forces.clearDevice(0);
-	nbodySharedPlusILPKernel<ndsts> <<< nblocks3, nthreads3, nthreads*sizeof(float3) >>> (
+	nbodySharedPlusILPKernel<ndsts> <<< nblocks3, nthreads3, nthreads*sizeof(float3), stream >>> (
 			coordinates.devPtr(), forces.devPtr(), nparticles, L, interaction);
 }
 
@@ -497,7 +497,9 @@ void runSimulation(
 
 	while (t < T) {
 		// update r (coordinates):
+		cudaDeviceSynchronize();
 		nbody_posKernel(dt, coordinates, forces, velocity);
+		cudaDeviceSynchronize();
 
 		if (false) {
 			coordinates.downloadFromDevice(0);
@@ -527,17 +529,14 @@ void runSimulation(
 			printf("velocity[0]: %.4f, %.4f, %.4f\n\n", velocity[0].x, velocity[0].y, velocity[0].z);
 		}
 
-		// synchronize:
-		cudaDeviceSynchronize();
-
 		// swap forces:
 		std::swap(forces, temp_forces);
 
 		t += dt;
 		if (step_counter % 100 == 0) {
 			// calculate energy:
-			nbodyNaive_Epot(L, coordinates, Epot_total, f_interaction);
-			nbodyKernel_Ekin(velocity, Ekin_total);
+			nbodyNaive_Epot(streamCompute, L, coordinates, Epot_total, f_interaction);
+			nbodyKernel_Ekin(streamCompute, velocity, Ekin_total);
 
 			// get values from GPU:
 			Epot_total.downloadFromDevice(0);
@@ -547,6 +546,7 @@ void runSimulation(
 			printf("Epot: %.4f, Ekin: %.4f, E: %.4f\n\n", Epot_total[0], Ekin_total[0], Epot_total[0]+Ekin_total[0]);
 
 			// data already loaded !
+			cudaDeviceSynchronize();
 			saveData("dump_" + std::to_string(step_counter) + ".txt", coordinates.hostPtr(), n);
 		}
 		step_counter++;
