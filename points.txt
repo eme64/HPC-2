@@ -1,4 +1,17 @@
---- Set 01:    74 / 80
+Exercise ID, 	Grade,	Comments
+01,		5.75,	see points.txt
+02,		5.50,	see points.txt
+03,		5.75,	see points.txt
+04,		5.75,	see points.txt
+05,		5.75,	see points.txt
+06,		6.00,	see points.txt
+07,		5.50,	see points.txt
+08,		5.75,	see points.txt
+09,		5.75,	see points.txt
+10,		5.75,	see points.txt
+
+
+--- Set 01:    74 / 80 -> 5.75
 1a) 4/4
 1b) 5/5
 1c) 6/6
@@ -14,7 +27,7 @@
 -1 missing plot, but data probably ok
 (no bonus) was asked really weirdly, not really enough info to be solved.
 
---- Set 02:    44 / 50
+--- Set 02:    44 / 50 -> 5.50
 1a) 10 / 10
 1b) 9  / 10
 -1 some small factor not carried over right
@@ -28,14 +41,14 @@ most did not know that one could leave the equation in a simple form
 2.2) 3 / 5
 2.3) 4 / 7
 
---- Set 03:    38/40
+--- Set 03:    38/40 -> 5.75
 1)  18/20
 did not do measurement up to 24 cores, but almost scales linearly at 12
 -2 for missing scaling plot
 2) 20 / 20
 
 
---- Set 04     23/25
+--- Set 04     23/25 -> 5.75
 1a) 8/8
 1b) 3/5
 -2 got stuck somewhere
@@ -43,17 +56,17 @@ did not do measurement up to 24 cores, but almost scales linearly at 12
 2) 12/12
 
 
---- Set 05     18/19
+--- Set 05     18/19 -> 5.75
 1) 7/7
 2) 11/12
 -1 because parallelized init_markov_tree does not generate same tree
 
 
---- Set 06     50/50
+--- Set 06     50/50 -> 6.00
 1) 30/30
 2) 20/20
 
---- Set 07     16/19
+--- Set 07     16/19 -> 5.50
 1a) 4/5
 1b) 4/5
 -2 because arguments not perfect, some bad steps.
@@ -69,3 +82,33 @@ t(x|y)
 q(x,y) * p(u <= h | y) ---> not clear by my argument.
 
 2rest) 7/7
+
+--- Set 08     21/22 -> 5.75
+1a) 1.5/2 (exp missing)
+1rest) 20/20 (results match solution description)
+
+--- Set 09     44/50 -> 5.75
+1a) 9/10
+polynomial derivation factors missing
+-> errors to be expected in following sub-tasks
+1b) 5/5
+not counting mistake from a)
+1c) 5/10
+did dot-product instead, but looks ok otherwise
+1d) 5/5
+1e) 5/5
+1f) 10/10
+as far as I can tell...
+
+--- Set 10     58/65 -> 5.75
+1a) 20/20
+1b) 0/5
+I did compare them, they did not match up however.
+Bug could be anywhere. But probably the potential calculation is part of the problem?
+1c) 5/5
+1d) 8/10
+not sure if temperature control is done right, but probably yes...
+1e) 5/5
+1f) 10/10
+1g) 5/5
+1h) 5/5
